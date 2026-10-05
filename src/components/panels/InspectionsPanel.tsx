@@ -8,7 +8,8 @@ import {
   AlertTriangle,
   CheckCircle2,
   Clock,
-  ChevronRight
+  ChevronRight,
+  Check
 } from 'lucide-react';
 import {
   SubsidiaryId,
@@ -18,6 +19,7 @@ import {
 } from '../../types/dashboard';
 import { INSPECTIONS_DATA } from '../../data/mockData';
 import { InspectionDetailModal } from '../Inspections/InspectionDetailModal';
+import { ScheduleInspectionModal } from '../Inspections/ScheduleInspectionModal';
 
 interface InspectionsPanelProps {
   subsidiary: SubsidiaryId;
@@ -36,6 +38,8 @@ export const InspectionsPanel: React.FC<InspectionsPanelProps> = ({
   const [selectedInspection, setSelectedInspection] = useState<InspectionRecord | null>(
     selectedInspectionFromParent || null
   );
+  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+  const [successBannerMsg, setSuccessBannerMsg] = useState<string | null>(null);
 
   React.useEffect(() => {
     if (selectedInspectionFromParent) {
@@ -87,9 +91,33 @@ export const InspectionsPanel: React.FC<InspectionsPanelProps> = ({
     );
   };
 
+  const handleScheduleSuccess = (newInsp: InspectionRecord) => {
+    setInspectionsList((prev) => [newInsp, ...prev]);
+    setSuccessBannerMsg(`Inspection ${newInsp.id} successfully scheduled for ${newInsp.mine} (${newInsp.area})!`);
+    setTimeout(() => {
+      setSuccessBannerMsg(null);
+    }, 6000);
+  };
+
   return (
     <div className="space-y-5">
       
+      {/* Success Banner Notification */}
+      {successBannerMsg && (
+        <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200 flex items-center justify-between shadow-xs animate-in fade-in slide-in-from-top-2">
+          <div className="flex items-center gap-2.5 font-bold text-xs">
+            <Check className="w-5 h-5 text-emerald-600 shrink-0" />
+            <span>{successBannerMsg}</span>
+          </div>
+          <button
+            onClick={() => setSuccessBannerMsg(null)}
+            className="text-xs text-emerald-700 dark:text-emerald-300 font-semibold hover:underline"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
+
       {/* Header Banner */}
       <div className="flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
         <div>
@@ -102,7 +130,10 @@ export const InspectionsPanel: React.FC<InspectionsPanelProps> = ({
           </p>
         </div>
 
-        <button className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center gap-1.5 transition-colors shadow-xs">
+        <button
+          onClick={() => setIsScheduleModalOpen(true)}
+          className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer"
+        >
           <Plus className="w-4 h-4" />
           <span>Schedule New Inspection</span>
         </button>
@@ -252,12 +283,20 @@ export const InspectionsPanel: React.FC<InspectionsPanelProps> = ({
         </div>
       </div>
 
-      {/* Modal View */}
+      {/* Detail Modal View */}
       <InspectionDetailModal
         inspection={selectedInspection}
         onClose={handleCloseModal}
         role={role}
         onVerifyInspection={handleVerifyInModal}
+      />
+
+      {/* Schedule Inspection Modal */}
+      <ScheduleInspectionModal
+        isOpen={isScheduleModalOpen}
+        onClose={() => setIsScheduleModalOpen(false)}
+        onScheduleSuccess={handleScheduleSuccess}
+        currentSubsidiary={subsidiary}
       />
 
     </div>
