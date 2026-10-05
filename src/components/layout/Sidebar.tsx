@@ -101,8 +101,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <div className="h-16 px-4 flex items-center justify-between border-b border-slate-800">
         {!collapsed && (
           <div className="flex items-center gap-2.5 overflow-hidden">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center font-bold text-white shadow-md text-xs font-mono">
-              MF
+            <div className="w-8 h-8 rounded-md bg-white p-0.5 border border-slate-700 flex items-center justify-center shrink-0">
+              <img src="/emblem.png" alt="Emblem of India" className="w-full h-full object-contain" />
             </div>
             <div className="flex flex-col min-w-0">
               <span className="font-bold text-sm tracking-tight text-white truncate">Mine Forge</span>
@@ -112,8 +112,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
         )}
 
         {collapsed && (
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center font-bold text-white shadow-md text-xs mx-auto">
-            MF
+          <div className="w-8 h-8 rounded-md bg-white p-0.5 border border-slate-700 flex items-center justify-center mx-auto shrink-0">
+            <img src="/emblem.png" alt="Emblem of India" className="w-full h-full object-contain" />
           </div>
         )}
 

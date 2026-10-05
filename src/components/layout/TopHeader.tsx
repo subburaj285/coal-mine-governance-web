@@ -82,6 +82,9 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
       
       {/* Brand Identity & Title */}
       <div className="flex items-center gap-2.5 shrink-0">
+        <div className="w-8 h-8 rounded-md bg-white p-0.5 border border-slate-200 dark:border-slate-700 flex items-center justify-center shrink-0">
+          <img src="/emblem.png" alt="Emblem of India" className="w-full h-full object-contain" />
+        </div>
         <div className="flex flex-col min-w-0">
           <span className="font-extrabold text-xs sm:text-sm tracking-tight text-slate-900 dark:text-white font-mono truncate">
             MINE FORGE

@@ -74,10 +74,8 @@ export const Header: React.FC<HeaderProps> = ({
         
         {/* Left: Organization Identity & Emblem */}
         <div className="flex items-center gap-3 shrink-0">
-          <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-500 shadow-xs">
-            <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current">
-              <path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5zm0 3.3l6 3.33v4.37c0 4.1-2.73 7.9-6 9-3.27-1.1-6-4.9-6-9V8.63l6-3.33zm-1 4.7v5h2v-5h-2zm-3 7h8v1H8v-1z" />
-            </svg>
+          <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-white p-1 border border-slate-200 dark:border-slate-700 shadow-xs">
+            <img src="/emblem.png" alt="Emblem of India" className="w-full h-full object-contain" />
           </div>
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
