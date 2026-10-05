@@ -1,0 +1,6 @@
+{
+  "name": "Coal India Smart Governance & Compliance System",
+  "description": "AI-based smart governance, safety compliance, environmental tracking, and real-time monitoring across Coal India Limited mines (Problem Statement ID: 26024).",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
