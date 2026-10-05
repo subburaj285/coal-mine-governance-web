@@ -14,7 +14,8 @@ import {
   User,
   AlertTriangle
 } from 'lucide-react';
-import { InspectionRecord, UserRole } from '../../types/dashboard';
+import { InspectionRecord, UserRole, EvidenceItem } from '../../types/dashboard';
+import { ImageLightboxModal } from '../common/ImageLightboxModal';
 
 interface InspectionDetailModalProps {
   inspection: InspectionRecord | null;
@@ -33,6 +34,7 @@ export const InspectionDetailModal: React.FC<InspectionDetailModalProps> = ({
     'overview' | 'findings' | 'evidence' | 'compliance' | 'actions' | 'verification' | 'audit'
   >('overview');
 
+  const [selectedLightboxImage, setSelectedLightboxImage] = useState<EvidenceItem | null>(null);
   const [verificationNotes, setVerificationNotes] = useState('');
   const [isVerified, setIsVerified] = useState(inspection?.status === 'Verified' || inspection?.status === 'Closed');
 
@@ -219,8 +221,17 @@ export const InspectionDetailModal: React.FC<InspectionDetailModalProps> = ({
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {inspection.findings.flatMap((f) => f.evidence).map((ev) => (
-                    <div key={ev.id} className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden text-xs">
-                      <img src={ev.url} alt={ev.caption} className="w-full h-40 object-cover" />
+                    <div
+                      key={ev.id}
+                      onClick={() => setSelectedLightboxImage(ev)}
+                      className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden text-xs hover:border-blue-500 cursor-pointer transition-all shadow-2xs group"
+                    >
+                      <div className="relative overflow-hidden">
+                        <img src={ev.url} alt={ev.caption} className="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300" />
+                        <span className="absolute bottom-2 right-2 bg-slate-900/80 text-white text-[10px] font-mono px-2 py-0.5 rounded backdrop-blur-xs">
+                          Click to View High-Res
+                        </span>
+                      </div>
                       <div className="p-3 space-y-1">
                         <div className="font-bold text-slate-900 dark:text-white">{ev.caption}</div>
                         <div className="text-[10px] text-slate-500 font-mono">Uploader: {ev.uploader}</div>
@@ -335,6 +346,12 @@ export const InspectionDetailModal: React.FC<InspectionDetailModalProps> = ({
         </div>
 
       </div>
+
+      {/* High-Res Evidence Lightbox Preview Modal */}
+      <ImageLightboxModal
+        evidence={selectedLightboxImage}
+        onClose={() => setSelectedLightboxImage(null)}
+      />
     </div>
   );
 };

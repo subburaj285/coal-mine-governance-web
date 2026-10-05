@@ -134,6 +134,69 @@ export const OverviewPanel: React.FC<OverviewPanelProps> = ({
         })}
       </div>
 
+      {/* PRIORITY ATTENTION: "What needs my attention right now?" */}
+      <div className="p-4 rounded-xl border border-rose-200 dark:border-rose-900/60 bg-gradient-to-r from-rose-50/70 via-white to-amber-50/50 dark:from-rose-950/30 dark:via-slate-900 dark:to-amber-950/20 shadow-xs space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 text-rose-600 animate-pulse" />
+            <h3 className="font-bold text-sm text-slate-900 dark:text-white">Priority Attention Required Right Now</h3>
+          </div>
+          <span className="text-[10px] font-mono font-bold text-rose-700 dark:text-rose-400 bg-rose-100 dark:bg-rose-900/40 px-2 py-0.5 rounded border border-rose-200">
+            Action Required Before Shift End
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+          <div
+            onClick={() => onNavigateTab('compliance')}
+            className="p-3 rounded-lg border border-rose-200 dark:border-rose-800/60 bg-white dark:bg-slate-900 hover:border-rose-400 cursor-pointer transition-all space-y-1 shadow-2xs group"
+          >
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-rose-600 font-mono text-base">3 Critical</span>
+              <ChevronRight className="w-3.5 h-3.5 text-rose-400 group-hover:translate-x-0.5 transition-transform" />
+            </div>
+            <div className="font-semibold text-slate-900 dark:text-white">Non-Compliance Notices</div>
+            <div className="text-[10px] text-slate-500">Moonidih UG CMR 153 Air Velocity</div>
+          </div>
+
+          <div
+            onClick={() => onNavigateTab('actions')}
+            className="p-3 rounded-lg border border-amber-200 dark:border-amber-800/60 bg-white dark:bg-slate-900 hover:border-amber-400 cursor-pointer transition-all space-y-1 shadow-2xs group"
+          >
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-amber-600 font-mono text-base">6 Overdue</span>
+              <ChevronRight className="w-3.5 h-3.5 text-amber-400 group-hover:translate-x-0.5 transition-transform" />
+            </div>
+            <div className="font-semibold text-slate-900 dark:text-white">Corrective Actions</div>
+            <div className="text-[10px] text-slate-500">2 Critical SLA violations pending</div>
+          </div>
+
+          <div
+            onClick={() => onNavigateTab('reports')}
+            className="p-3 rounded-lg border border-blue-200 dark:border-blue-800/60 bg-white dark:bg-slate-900 hover:border-blue-400 cursor-pointer transition-all space-y-1 shadow-2xs group"
+          >
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-blue-600 font-mono text-base">2 Filing</span>
+              <ChevronRight className="w-3.5 h-3.5 text-blue-400 group-hover:translate-x-0.5 transition-transform" />
+            </div>
+            <div className="font-semibold text-slate-900 dark:text-white">Statutory Deadlines</div>
+            <div className="text-[10px] text-slate-500">SPCB Form V due within 7 days</div>
+          </div>
+
+          <div
+            onClick={() => onNavigateTab('inspections')}
+            className="p-3 rounded-lg border border-purple-200 dark:border-purple-800/60 bg-white dark:bg-slate-900 hover:border-purple-400 cursor-pointer transition-all space-y-1 shadow-2xs group"
+          >
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-purple-600 font-mono text-base">1 Verification</span>
+              <ChevronRight className="w-3.5 h-3.5 text-purple-400 group-hover:translate-x-0.5 transition-transform" />
+            </div>
+            <div className="font-semibold text-slate-900 dark:text-white">Pending Signoff</div>
+            <div className="text-[10px] text-slate-500">Gevra Bench 5 Berm Evidence</div>
+          </div>
+        </div>
+      </div>
+
       {/* SECTION 1: RISK & COMPLIANCE (TWO COLUMNS) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         
