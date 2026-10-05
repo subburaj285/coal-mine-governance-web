@@ -54,7 +54,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, subsi
             </div>
             <div>
               <h3 className="font-bold text-slate-900 dark:text-white text-base">Export Governance & Audit Report</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Coal India Limited · Ministry of Coal (PSID 26024)</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Mine Forge · Coal India Operations</p>
             </div>
           </div>
           <button

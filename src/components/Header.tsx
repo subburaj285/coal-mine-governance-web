@@ -82,10 +82,10 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
               <span className="font-bold text-sm md:text-base tracking-tight text-slate-900 dark:text-white">
-                COAL INDIA LIMITED
+                MINE FORGE
               </span>
               <span className="hidden lg:inline-block text-[11px] px-1.5 py-0.5 rounded font-mono font-medium bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-500/20 dark:text-blue-400 dark:border-blue-500/30">
-                MoC #26024
+                Governance Platform
               </span>
             </div>
             <span className="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-[200px] md:max-w-xs">

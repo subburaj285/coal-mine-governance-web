@@ -240,7 +240,7 @@ export const InspectionsPanel: React.FC<InspectionsPanelProps> = ({
                   onClick={() => setSelectedInspection(insp)}
                   className="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors"
                 >
-                  <td className="py-3 px-4 font-mono font-bold text-blue-600 dark:text-blue-400">{insp.id}</td>
+                  <td className="py-3 px-4 font-mono font-bold text-slate-900 dark:text-white">{insp.id}</td>
                   <td className="py-3 px-4 font-bold text-slate-900 dark:text-white">
                     {insp.mine} <span className="text-slate-400 font-normal">({insp.subsidiary})</span>
                   </td>

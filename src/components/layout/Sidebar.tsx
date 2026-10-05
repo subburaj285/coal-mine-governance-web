@@ -94,19 +94,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <aside
-      className={`relative flex flex-col h-screen sticky top-0 border-r border-slate-200 dark:border-slate-800 bg-slate-900 text-slate-100 transition-all duration-300 z-30 select-none ${
-        collapsed ? 'w-16' : 'w-64'
-      }`}
+      className={`relative flex flex-col h-screen sticky top-0 border-r border-slate-200 dark:border-slate-800 bg-slate-900 text-slate-100 transition-all duration-300 z-30 select-none ${collapsed ? 'w-16' : 'w-64'
+        }`}
     >
       {/* Brand Header */}
       <div className="h-16 px-4 flex items-center justify-between border-b border-slate-800">
         {!collapsed && (
           <div className="flex items-center gap-2.5 overflow-hidden">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center font-bold text-white shadow-md text-xs font-mono">
-              CIL
+              MF
             </div>
             <div className="flex flex-col min-w-0">
-              <span className="font-bold text-xs tracking-tight text-white truncate">Coal India Limited</span>
+              <span className="font-bold text-sm tracking-tight text-white truncate">Mine Forge</span>
               <span className="text-[10px] text-slate-400 truncate">Smart Governance Platform</span>
             </div>
           </div>
@@ -114,7 +113,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {collapsed && (
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center font-bold text-white shadow-md text-xs mx-auto">
-            CIL
+            MF
           </div>
         )}
 
@@ -152,11 +151,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     onSelectTab('operations');
                     setOpsExpanded(!opsExpanded);
                   }}
-                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-colors cursor-pointer ${
-                    isActive
+                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-colors cursor-pointer ${isActive
                       ? 'bg-blue-600 text-white font-semibold shadow-xs'
                       : 'text-slate-300 hover:text-white hover:bg-slate-800/70'
-                  }`}
+                    }`}
                   title={collapsed ? item.label : undefined}
                 >
                   <div className="flex items-center gap-3">
@@ -182,11 +180,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             onSelectTab('operations');
                             onSelectOperationsSubTab(sub.id);
                           }}
-                          className={`w-full text-left px-3 py-1.5 rounded-md text-xs transition-colors cursor-pointer ${
-                            isSubActive
+                          className={`w-full text-left px-3 py-1.5 rounded-md text-xs transition-colors cursor-pointer ${isSubActive
                               ? 'text-white font-semibold bg-slate-800 border-l-2 border-blue-500'
                               : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
-                          }`}
+                            }`}
                         >
                           {sub.label}
                         </button>
@@ -204,16 +201,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
               onClick={() => onSelectTab(item.id)}
               className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
                 isActive
-                  ? 'bg-blue-600 text-white font-semibold shadow-xs'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800/70'
+                  ? 'bg-slate-800 text-white font-semibold border-l-2 border-amber-500 shadow-xs'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
               }`}
               title={collapsed ? item.label : undefined}
             >
               <div className="flex items-center gap-3">
                 <Icon
-                  className={`w-4 h-4 shrink-0 ${
-                    item.isAi ? 'text-purple-400' : isActive ? 'text-white' : 'text-slate-400'
-                  }`}
+                  className={`w-4 h-4 shrink-0 ${item.isAi ? 'text-purple-400' : isActive ? 'text-white' : 'text-slate-400'
+                    }`}
                 />
                 {!collapsed && (
                   <span className="flex items-center gap-1.5">
@@ -229,9 +225,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
               {!collapsed && item.badge !== undefined && item.badge > 0 && (
                 <span
-                  className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
-                    item.badgeColor || 'bg-slate-800 text-slate-200'
-                  }`}
+                  className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${item.badgeColor || 'bg-slate-800 text-slate-200'
+                    }`}
                 >
                   {item.badge}
                 </span>
@@ -245,7 +240,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {!collapsed && (
         <div className="p-3 border-t border-slate-800 text-[10px] text-slate-400 flex flex-col gap-0.5">
           <div className="flex items-center justify-between">
-            <span className="font-mono">SIH PS ID: 26024</span>
+            <span className="font-semibold text-slate-300">Mine Forge Governance</span>
             <span className="text-emerald-400 font-semibold">Live System</span>
           </div>
           <span className="text-slate-400 truncate">Ministry of Coal · Coal India</span>

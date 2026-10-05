@@ -169,7 +169,7 @@ export const CorrectiveActionsPanel: React.FC<CorrectiveActionsPanelProps> = ({
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
               {filtered.map((act) => (
                 <tr key={act.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
-                  <td className="py-3 px-4 font-mono font-bold text-blue-600 dark:text-blue-400">{act.id}</td>
+                  <td className="py-3 px-4 font-mono font-bold text-slate-900 dark:text-white">{act.id}</td>
                   <td className="py-3 px-4 font-mono text-slate-500">{act.source}</td>
                   <td className="py-3 px-4 font-semibold text-slate-900 dark:text-white max-w-xs truncate" title={act.issueTitle}>
                     {act.issueTitle}

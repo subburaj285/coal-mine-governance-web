@@ -11,16 +11,23 @@
     letter-spacing: -0.011em;
   }
 
-  .dark body, body.dark {
+  .dark body,
+  body.dark {
     background-color: #020617;
     color: #f8fafc;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     letter-spacing: -0.02em;
   }
 
-  .font-mono, .tabular-nums {
+  .font-mono,
+  .tabular-nums {
     font-family: 'JetBrains Mono', monospace;
     font-variant-numeric: tabular-nums;
   }
@@ -31,13 +38,16 @@
   width: 6px;
   height: 6px;
 }
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
   background: rgba(148, 163, 184, 0.35);
   border-radius: 9999px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(100, 116, 139, 0.6);
 }
@@ -46,9 +56,11 @@
 .leaflet-container {
   background-color: #f1f5f9;
 }
+
 .dark .leaflet-container {
   background-color: #0f172a;
 }
+
 .leaflet-popup-content-wrapper {
   background: #ffffff !important;
   color: #0f172a !important;
@@ -56,15 +68,18 @@
   border-radius: 8px !important;
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15) !important;
 }
+
 .leaflet-popup-tip {
   background: #ffffff !important;
 }
+
 .dark .leaflet-popup-content-wrapper {
   background: #1e293b !important;
   color: #f1f5f9 !important;
   border: 1px solid #334155 !important;
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;
 }
+
 .dark .leaflet-popup-tip {
   background: #1e293b !important;
 }

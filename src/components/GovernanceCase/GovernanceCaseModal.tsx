@@ -72,7 +72,7 @@ export const GovernanceCaseModal: React.FC<GovernanceCaseModalProps> = ({ isOpen
   return (
     <div className="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
       <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden">
-        
+
         {/* Header */}
         <div className="p-4 sm:p-5 border-b border-slate-200 dark:border-slate-800 flex items-start justify-between bg-slate-50 dark:bg-slate-950">
           <div>
@@ -113,11 +113,10 @@ export const GovernanceCaseModal: React.FC<GovernanceCaseModalProps> = ({ isOpen
                 <button
                   key={st.num}
                   onClick={() => setActiveStep(st.num)}
-                  className={`flex-1 flex flex-col items-center p-2.5 rounded-xl border text-center transition-all cursor-pointer ${
-                    isActive
+                  className={`flex-1 flex flex-col items-center p-2.5 rounded-xl border text-center transition-all cursor-pointer ${isActive
                       ? `${st.color} shadow-sm ring-2 ring-blue-500/30 font-bold`
                       : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-850 hover:bg-slate-100 dark:hover:bg-slate-800'
-                  }`}
+                    }`}
                 >
                   <Icon className="w-4 h-4 mb-1" />
                   <span className="text-[11px] font-bold text-slate-900 dark:text-white leading-tight">{st.title}</span>
@@ -130,7 +129,7 @@ export const GovernanceCaseModal: React.FC<GovernanceCaseModalProps> = ({ isOpen
 
         {/* Step Detail Viewport */}
         <div className="p-6 flex-1 overflow-y-auto space-y-5">
-          
+
           {/* STEP 1: INSPECTION */}
           {activeStep === 1 && (
             <div className="space-y-3">
@@ -247,11 +246,10 @@ export const GovernanceCaseModal: React.FC<GovernanceCaseModalProps> = ({ isOpen
           <button
             disabled={activeStep === 1}
             onClick={() => setActiveStep((prev) => Math.max(1, prev - 1))}
-            className={`px-3 py-1.5 rounded-lg border font-semibold transition-colors ${
-              activeStep === 1
+            className={`px-3 py-1.5 rounded-lg border font-semibold transition-colors ${activeStep === 1
                 ? 'opacity-40 cursor-not-allowed border-slate-200 text-slate-400'
                 : 'border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100'
-            }`}
+              }`}
           >
             ← Previous Step
           </button>

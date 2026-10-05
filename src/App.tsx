@@ -114,7 +114,7 @@ export default function App() {
 
   return (
     <div className={`min-h-screen flex transition-colors ${darkMode ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'}`}>
-      
+
       {/* 1. Persistent Left Sidebar Navigation */}
       <Sidebar
         activeTab={activeTab}
@@ -131,7 +131,7 @@ export default function App() {
 
       {/* Main Viewport Content Container */}
       <div className="flex-1 flex flex-col min-w-0 min-h-screen">
-        
+
         {/* 2. Top Header Bar */}
         <TopHeader
           subsidiary={subsidiary}

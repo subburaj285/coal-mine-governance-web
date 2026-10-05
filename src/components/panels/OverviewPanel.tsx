@@ -58,7 +58,7 @@ export const OverviewPanel: React.FC<OverviewPanelProps> = ({
 
   return (
     <div className="space-y-6">
-      
+
       {/* Overview Header & Filter Ribbon */}
       <div className="flex flex-wrap items-center justify-between gap-4 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
         <div>
@@ -199,7 +199,7 @@ export const OverviewPanel: React.FC<OverviewPanelProps> = ({
 
       {/* SECTION 1: RISK & COMPLIANCE (TWO COLUMNS) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        
+
         {/* LEFT: Compliance Overview Breakdown (5 cols) */}
         <div className="lg:col-span-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-xs">
           <div className="flex items-center justify-between mb-4">
@@ -288,11 +288,10 @@ export const OverviewPanel: React.FC<OverviewPanelProps> = ({
                     </td>
                     <td className="py-2.5 px-3">
                       <span
-                        className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                          v.severity === 'Critical'
+                        className={`px-2 py-0.5 rounded text-[10px] font-bold ${v.severity === 'Critical'
                             ? 'bg-rose-100 text-rose-800 dark:bg-rose-500/20 dark:text-rose-400 border border-rose-200'
                             : 'bg-amber-100 text-amber-800 dark:bg-amber-500/20 dark:text-amber-400 border border-amber-200'
-                        }`}
+                          }`}
                       >
                         {v.severity}
                       </span>
@@ -381,13 +380,12 @@ export const OverviewPanel: React.FC<OverviewPanelProps> = ({
                   </td>
                   <td className="py-2.5 px-3">
                     <span
-                      className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                        insp.riskLevel === 'Critical'
+                      className={`px-2 py-0.5 rounded text-[10px] font-bold ${insp.riskLevel === 'Critical'
                           ? 'bg-rose-100 text-rose-800 dark:bg-rose-500/20 dark:text-rose-400 border border-rose-200'
                           : insp.riskLevel === 'Major'
-                          ? 'bg-amber-100 text-amber-800 dark:bg-amber-500/20 dark:text-amber-400 border border-amber-200'
-                          : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-200'
-                      }`}
+                            ? 'bg-amber-100 text-amber-800 dark:bg-amber-500/20 dark:text-amber-400 border border-amber-200'
+                            : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-200'
+                        }`}
                     >
                       {insp.riskLevel}
                     </span>
@@ -471,11 +469,10 @@ export const OverviewPanel: React.FC<OverviewPanelProps> = ({
                     <td className="py-2.5 px-3 font-mono text-rose-600 font-semibold">{act.dueDate}</td>
                     <td className="py-2.5 px-3">
                       <span
-                        className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                          act.priority === 'Critical'
+                        className={`px-2 py-0.5 rounded text-[10px] font-bold ${act.priority === 'Critical'
                             ? 'bg-rose-100 text-rose-800 border border-rose-200'
                             : 'bg-amber-100 text-amber-800 border border-amber-200'
-                        }`}
+                          }`}
                       >
                         {act.priority}
                       </span>
@@ -508,18 +505,16 @@ export const OverviewPanel: React.FC<OverviewPanelProps> = ({
           {ACTIVE_ALERTS.slice(0, 4).map((alt) => (
             <div
               key={alt.id}
-              className={`p-3 rounded-xl border flex items-start justify-between gap-3 text-xs ${
-                alt.severity === 'Critical'
+              className={`p-3 rounded-xl border flex items-start justify-between gap-3 text-xs ${alt.severity === 'Critical'
                   ? 'bg-rose-50/70 dark:bg-rose-950/30 border-rose-200 dark:border-rose-900/50'
                   : 'bg-amber-50/70 dark:bg-amber-950/30 border-amber-200 dark:border-amber-900/50'
-              }`}
+                }`}
             >
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
                   <span
-                    className={`px-1.5 py-0.2 rounded text-[9px] font-bold uppercase ${
-                      alt.severity === 'Critical' ? 'bg-rose-600 text-white' : 'bg-amber-600 text-white'
-                    }`}
+                    className={`px-1.5 py-0.2 rounded text-[9px] font-bold uppercase ${alt.severity === 'Critical' ? 'bg-rose-600 text-white' : 'bg-amber-600 text-white'
+                      }`}
                   >
                     {alt.severity}
                   </span>
