@@ -4,9 +4,17 @@ import {
   ClipboardList,
   Scale,
   CheckCircle2,
+  ShieldAlert,
+  Leaf,
+  Layers,
+  Compass,
+  Sparkles,
   FileSpreadsheet,
+  Bell,
+  SlidersHorizontal,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  ChevronDown
 } from 'lucide-react';
 import { UserRole } from '../../types/dashboard';
 
@@ -15,14 +23,26 @@ export type NavTab =
   | 'inspections'
   | 'compliance'
   | 'actions'
-  | 'reports';
+  | 'safety'
+  | 'environment'
+  | 'operations'
+  | 'gis'
+  | 'ai'
+  | 'reports'
+  | 'notifications'
+  | 'admin';
+
+export type OperationsSubTab = 'production' | 'workforce' | 'equipment';
 
 interface SidebarProps {
   activeTab: NavTab;
   onSelectTab: (tab: NavTab) => void;
+  operationsSubTab: OperationsSubTab;
+  onSelectOperationsSubTab: (subTab: OperationsSubTab) => void;
   role: UserRole;
   collapsed: boolean;
   onToggleCollapse: () => void;
+  unreadNotificationsCount: number;
   overdueActionsCount: number;
   openViolationsCount: number;
 }
@@ -30,18 +50,46 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({
   activeTab,
   onSelectTab,
+  operationsSubTab,
+  onSelectOperationsSubTab,
   role,
   collapsed,
   onToggleCollapse,
+  unreadNotificationsCount,
   overdueActionsCount,
   openViolationsCount
 }) => {
-  const mainNav = [
-    { id: 'overview' as NavTab, label: 'Overview', icon: LayoutDashboard },
-    { id: 'inspections' as NavTab, label: 'Cases', icon: ClipboardList, badge: 18 },
-    { id: 'compliance' as NavTab, label: 'Compliance', icon: Scale, badge: openViolationsCount },
+  const [opsExpanded, setOpsExpanded] = React.useState(activeTab === 'operations');
+
+  React.useEffect(() => {
+    if (activeTab === 'operations') {
+      setOpsExpanded(true);
+    }
+  }, [activeTab]);
+
+  const navItems = [
+    { id: 'overview' as NavTab, label: 'Governance Overview', icon: LayoutDashboard },
+    { id: 'inspections' as NavTab, label: 'Inspections', icon: ClipboardList, badge: 18 },
+    { id: 'compliance' as NavTab, label: 'Statutory Compliance', icon: Scale, badge: openViolationsCount },
     { id: 'actions' as NavTab, label: 'Corrective Actions', icon: CheckCircle2, badge: overdueActionsCount, badgeColor: 'bg-rose-600' },
-    { id: 'reports' as NavTab, label: 'Reports', icon: FileSpreadsheet }
+    { id: 'safety' as NavTab, label: 'Safety Management', icon: ShieldAlert },
+    { id: 'environment' as NavTab, label: 'Environment & ESG', icon: Leaf },
+    {
+      id: 'operations' as NavTab,
+      label: 'Operations',
+      icon: Layers,
+      hasSubmenu: true,
+      subItems: [
+        { id: 'production' as OperationsSubTab, label: 'Production & Offtake' },
+        { id: 'workforce' as OperationsSubTab, label: 'Workforce & Muster' },
+        { id: 'equipment' as OperationsSubTab, label: 'Equipment & Fleet' }
+      ]
+    },
+    { id: 'gis' as NavTab, label: 'GIS & Mine Map', icon: Compass },
+    { id: 'ai' as NavTab, label: 'AI-Assisted Insights', icon: Sparkles, isAi: true },
+    { id: 'reports' as NavTab, label: 'Reports & Audit', icon: FileSpreadsheet },
+    { id: 'notifications' as NavTab, label: 'Notifications', icon: Bell, badge: unreadNotificationsCount },
+    { id: 'admin' as NavTab, label: 'Administration', icon: SlidersHorizontal }
   ];
 
   return (
@@ -81,26 +129,75 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Role Badge Indicator */}
       {!collapsed && (
-        <div className="px-3 py-2 mx-3 mt-3 rounded-lg bg-slate-800/80 border border-slate-700/60 flex items-center justify-between text-xs">
+        <div className="px-3 py-2.5 mx-3 mt-3 rounded-lg bg-slate-800/80 border border-slate-700/60 flex items-center justify-between text-xs">
           <div className="flex flex-col">
-            <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider font-mono">Active Lens</span>
-            <span className="font-semibold text-blue-400 truncate max-w-[150px]">{role}</span>
+            <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Role Permission</span>
+            <span className="font-medium text-blue-400 truncate max-w-[150px]">{role}</span>
           </div>
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="Role Active" />
         </div>
       )}
 
-      {/* Primary Navigation */}
-      <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-2 no-scrollbar">
-        {!collapsed && (
-          <div className="px-3 text-[9px] font-bold font-mono text-slate-500 uppercase tracking-widest mb-2">
-            GOVERNANCE WORKFLOW
-          </div>
-        )}
-
-        {mainNav.map((item) => {
+      {/* Navigation Links */}
+      <nav className="flex-1 overflow-y-auto px-3 py-3 space-y-1 no-scrollbar">
+        {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
+
+          if (item.hasSubmenu) {
+            return (
+              <div key={item.id} className="space-y-1">
+                <button
+                  onClick={() => {
+                    onSelectTab('operations');
+                    setOpsExpanded(!opsExpanded);
+                  }}
+                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+                    isActive
+                      ? 'bg-blue-600 text-white shadow-xs'
+                      : 'text-slate-300 hover:text-white hover:bg-slate-800/70'
+                  }`}
+                  title={collapsed ? item.label : undefined}
+                >
+                  <div className="flex items-center gap-3">
+                    <Icon className="w-4 h-4 shrink-0 text-blue-400" />
+                    {!collapsed && <span>{item.label}</span>}
+                  </div>
+                  {!collapsed && (
+                    <ChevronDown
+                      className={`w-3.5 h-3.5 transition-transform duration-200 ${opsExpanded ? 'rotate-180' : ''}`}
+                    />
+                  )}
+                </button>
+
+                {/* Operations Submenu */}
+                {!collapsed && opsExpanded && (
+                  <div className="pl-9 pr-1 space-y-1">
+                    {item.subItems?.map((sub) => {
+                      const isSubActive = activeTab === 'operations' && operationsSubTab === sub.id;
+                      return (
+                        <button
+                          key={sub.id}
+                          onClick={() => {
+                            onSelectTab('operations');
+                            onSelectOperationsSubTab(sub.id);
+                          }}
+                          className={`w-full text-left px-3 py-1.5 rounded-md text-xs transition-colors cursor-pointer ${
+                            isSubActive
+                              ? 'text-white font-semibold bg-slate-800 border-l-2 border-blue-500'
+                              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+                          }`}
+                        >
+                          {sub.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          }
+
           return (
             <button
               key={item.id}
@@ -113,8 +210,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
               title={collapsed ? item.label : undefined}
             >
               <div className="flex items-center gap-3">
-                <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`} />
-                {!collapsed && <span>{item.label}</span>}
+                <Icon
+                  className={`w-4 h-4 shrink-0 ${
+                    item.isAi ? 'text-purple-400' : isActive ? 'text-white' : 'text-slate-400'
+                  }`}
+                />
+                {!collapsed && (
+                  <span className="flex items-center gap-1.5">
+                    {item.label}
+                    {item.isAi && (
+                      <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                        AI
+                      </span>
+                    )}
+                  </span>
+                )}
               </div>
 
               {!collapsed && item.badge !== undefined && item.badge > 0 && (
@@ -131,7 +241,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         })}
       </nav>
 
-      {/* Footer */}
+      {/* Footer Info */}
       {!collapsed && (
         <div className="p-3 border-t border-slate-800 text-[10px] text-slate-400 flex flex-col gap-0.5">
           <div className="flex items-center justify-between">

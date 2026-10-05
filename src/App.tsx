@@ -11,7 +11,7 @@ import {
 import { ACTIVE_ALERTS, VIOLATIONS_DATA, CORRECTIVE_ACTIONS_DATA } from './data/mockData';
 
 // Layout Components
-import { Sidebar, NavTab } from './components/layout/Sidebar';
+import { Sidebar, NavTab, OperationsSubTab } from './components/layout/Sidebar';
 import { TopHeader } from './components/layout/TopHeader';
 
 // Reconstructed Governance Panels
@@ -19,7 +19,14 @@ import { OverviewPanel } from './components/panels/OverviewPanel';
 import { InspectionsPanel } from './components/panels/InspectionsPanel';
 import { CompliancePanel } from './components/panels/CompliancePanel';
 import { CorrectiveActionsPanel } from './components/panels/CorrectiveActionsPanel';
+import { SafetyPanel } from './components/panels/SafetyPanel';
+import { EnvironmentPanel } from './components/panels/EnvironmentPanel';
+import { OperationsPanel } from './components/panels/OperationsPanel';
+import { GeospatialPanel } from './components/panels/GeospatialPanel';
+import { AiInsightsPanel } from './components/panels/AiInsightsPanel';
 import { ReportsAuditPanel } from './components/panels/ReportsAuditPanel';
+import { NotificationsPanel } from './components/panels/NotificationsPanel';
+import { AdminPanel } from './components/panels/AdminPanel';
 
 // Modals
 import { DrillDownModal } from './components/DrillDownModal';
@@ -37,6 +44,7 @@ export default function App() {
 
   // Navigation State
   const [activeTab, setActiveTab] = useState<NavTab>('overview');
+  const [operationsSubTab, setOperationsSubTab] = useState<OperationsSubTab>('production');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   // Modals
@@ -62,6 +70,31 @@ export default function App() {
   // Role-based navigation preset
   const handleRoleChange = (newRole: UserRole) => {
     setRole(newRole);
+    switch (newRole) {
+      case 'DGMS Inspector':
+      case 'Corporate Leadership':
+        setActiveTab('overview');
+        break;
+      case 'Safety Officer':
+        setActiveTab('safety');
+        break;
+      case 'Environment Officer':
+        setActiveTab('environment');
+        break;
+      case 'Production Manager':
+        setActiveTab('operations');
+        setOperationsSubTab('production');
+        break;
+      case 'Maintenance Engineer':
+        setActiveTab('operations');
+        setOperationsSubTab('equipment');
+        break;
+      case 'Contractor Supervisor':
+        setActiveTab('actions');
+        break;
+      default:
+        break;
+    }
   };
 
   const handleAcknowledgeAlert = (id: string) => {
@@ -86,9 +119,12 @@ export default function App() {
       <Sidebar
         activeTab={activeTab}
         onSelectTab={setActiveTab}
+        operationsSubTab={operationsSubTab}
+        onSelectOperationsSubTab={setOperationsSubTab}
         role={role}
         collapsed={sidebarCollapsed}
         onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+        unreadNotificationsCount={unreadAlertsCount}
         overdueActionsCount={overdueActionsCount}
         openViolationsCount={openViolationsCount}
       />
@@ -143,12 +179,32 @@ export default function App() {
             />
           )}
 
+          {activeTab === 'safety' && <SafetyPanel subsidiary={subsidiary} />}
+
+          {activeTab === 'environment' && <EnvironmentPanel subsidiary={subsidiary} />}
+
+          {activeTab === 'operations' && (
+            <OperationsPanel
+              subsidiary={subsidiary}
+              activeSubTab={operationsSubTab}
+              onSelectSubTab={setOperationsSubTab}
+            />
+          )}
+
+          {activeTab === 'gis' && <GeospatialPanel subsidiary={subsidiary} />}
+
+          {activeTab === 'ai' && <AiInsightsPanel subsidiary={subsidiary} />}
+
           {activeTab === 'reports' && (
             <ReportsAuditPanel
               subsidiary={subsidiary}
               onOpenExportModal={() => setIsExportOpen(true)}
             />
           )}
+
+          {activeTab === 'notifications' && <NotificationsPanel subsidiary={subsidiary} />}
+
+          {activeTab === 'admin' && <AdminPanel currentRole={role} />}
         </main>
       </div>
 
