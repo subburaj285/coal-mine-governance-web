@@ -160,3 +160,80 @@ export interface StatutoryReport {
   status: 'Submitted & Verified' | 'Pending Review' | 'Draft' | 'Overdue';
   digitalSignatureSha: string;
 }
+
+// Governance Lifecycle Workflow Types
+
+export type InspectionStatus = 'Scheduled' | 'In Progress' | 'Review' | 'Verified' | 'Closed';
+
+export interface EvidenceItem {
+  id: string;
+  type: 'Photo' | 'Video' | 'Document' | 'Sensor Log';
+  caption: string;
+  url: string;
+  timestamp: string;
+  location: string;
+  uploader: string;
+}
+
+export interface FindingItem {
+  id: string;
+  inspectionId: string;
+  title: string;
+  description: string;
+  severity: 'Critical' | 'Major' | 'Minor';
+  aiSuggestion?: string;
+  aiConfidence?: number; // e.g. 87%
+  complianceRef: string; // e.g. CMR 2017 Reg 153
+  owner: string;
+  dueDate: string;
+  status: 'Open' | 'In Progress' | 'Pending Verification' | 'Resolved' | 'Closed';
+  evidence: EvidenceItem[];
+}
+
+export interface InspectionRecord {
+  id: string;
+  mine: string;
+  subsidiary: SubsidiaryId;
+  area: string;
+  type: 'Safety Audit' | 'DGMS Statutory' | 'Environmental Inspection' | 'Ventilation Audit' | 'Structural Integrity';
+  officer: string;
+  date: string;
+  findingsCount: number;
+  riskLevel: 'Critical' | 'Major' | 'Minor' | 'Low';
+  status: InspectionStatus;
+  findings: FindingItem[];
+  verificationNotes?: string;
+  verifiedBy?: string;
+}
+
+export type ActionStatus = 'OPEN' | 'ASSIGNED' | 'IN PROGRESS' | 'PENDING VERIFICATION' | 'VERIFIED' | 'CLOSED';
+
+export interface CorrectiveActionItem {
+  id: string;
+  source: string; // Inspection ID or Finding ID
+  issueTitle: string;
+  mine: string;
+  subsidiary: SubsidiaryId;
+  owner: string;
+  ownerDepartment: string;
+  priority: 'Critical' | 'High' | 'Medium' | 'Low';
+  dueDate: string;
+  ageDays: number;
+  status: ActionStatus;
+  correctiveEvidence?: EvidenceItem[];
+  verificationDate?: string;
+  verifiedBy?: string;
+}
+
+export interface AuditTrailItem {
+  id: string;
+  timestamp: string;
+  user: string;
+  role: UserRole;
+  action: string;
+  entity: string;
+  previousState: string;
+  newState: string;
+  hash: string;
+}
+

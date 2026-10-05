@@ -9,7 +9,10 @@ import {
   AirQualitySensor,
   ActiveAlert,
   ContractorCompliance,
-  StatutoryReport
+  StatutoryReport,
+  InspectionRecord,
+  CorrectiveActionItem,
+  AuditTrailItem
 } from '../types/dashboard';
 
 export const SUBSIDIARIES: { id: SubsidiaryId; name: string; hq: string; minesCount: number; annualCapacityMT: number }[] = [
@@ -442,25 +445,333 @@ export const STATUTORY_REPORTS: StatutoryReport[] = [
   { id: 'REP-04', code: 'MoC Star Rating', title: 'Star Rating Assessment Report for Coal Mines', regulator: 'Ministry of Coal', period: 'FY 2025-26', dueDate: '31 Oct 2026', status: 'Draft', digitalSignatureSha: 'sha256-pending-dg-signature-c0491' }
 ];
 
+// Governance Lifecycle Mock Data
+
+export const GOVERNANCE_KPIS = [
+  {
+    id: 'gov-compliance',
+    title: 'Compliance Score',
+    value: '96.8%',
+    subtext: '↑ 1.2% vs previous period',
+    trend: '+1.2%',
+    isPositive: true,
+    severity: 'normal' as const
+  },
+  {
+    id: 'gov-risks',
+    title: 'High-Risk Issues',
+    value: '14',
+    subtext: '3 Critical · 5 Major',
+    trend: '-4 this week',
+    isPositive: true,
+    severity: 'warning' as const
+  },
+  {
+    id: 'gov-overdue',
+    title: 'Overdue Corrective Actions',
+    value: '6',
+    subtext: '2 Critical · 4 High Priority',
+    trend: 'Requires Action',
+    isPositive: false,
+    severity: 'critical' as const
+  },
+  {
+    id: 'gov-inspections',
+    title: 'Active Inspections',
+    value: '18',
+    subtext: '12 Completed · 6 In Progress',
+    trend: 'On Track',
+    isPositive: true,
+    severity: 'info' as const
+  }
+];
+
+export const INSPECTIONS_DATA: InspectionRecord[] = [
+  {
+    id: 'INSP-2026-401',
+    mine: 'Moonidih Colliery',
+    subsidiary: 'BCCL',
+    area: 'Tailgate Airway Seam IX',
+    type: 'DGMS Statutory',
+    officer: 'Er. A. K. Banerjee (DGMS Sirdar)',
+    date: '2026-10-04',
+    findingsCount: 3,
+    riskLevel: 'Critical',
+    status: 'In Progress',
+    findings: [
+      {
+        id: 'FND-101',
+        inspectionId: 'INSP-2026-401',
+        title: 'Underground air velocity below requirement',
+        description: 'Air velocity in return airway measured at 1.1 m/s against CMR Regulation 153 minimum standard of 1.5 m/s.',
+        severity: 'Critical',
+        aiSuggestion: 'Adjust main ventilation fan blade pitch at Fan House #2 and check intake booster door seals.',
+        aiConfidence: 91,
+        complianceRef: 'CMR 2017 Regulation 153(2)',
+        owner: 'Safety Officer (Moonidih)',
+        dueDate: '2026-10-07',
+        status: 'Open',
+        evidence: [
+          {
+            id: 'EVD-01',
+            type: 'Photo',
+            caption: 'Anemometer reading 1.1 m/s at station 4B',
+            url: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=600&q=80',
+            timestamp: '2026-10-04 10:15 AM',
+            location: 'Moonidih Underground Station 4B (Lat: 23.7381, Lng: 86.3456)',
+            uploader: 'Er. A. K. Banerjee'
+          }
+        ]
+      },
+      {
+        id: 'FND-102',
+        inspectionId: 'INSP-2026-401',
+        title: 'CH4 sensor calibration log overdue by 5 days',
+        description: 'Stationary CH4 detector at Longwall Face #3 calibration record expired.',
+        severity: 'Major',
+        aiSuggestion: 'Recalibrate infrared gas sensor with certified 1.0% CH4 calibration gas cylinder.',
+        aiConfidence: 85,
+        complianceRef: 'CMR 2017 Regulation 154',
+        owner: 'Instrumentation Incharge',
+        dueDate: '2026-10-06',
+        status: 'In Progress',
+        evidence: []
+      }
+    ]
+  },
+  {
+    id: 'INSP-2026-398',
+    mine: 'Gevra Mega Pit',
+    subsidiary: 'SECL',
+    area: 'Bench 5 Haul Road Ramp',
+    type: 'Safety Audit',
+    officer: 'S. N. Mishra (Safety Officer)',
+    date: '2026-10-03',
+    findingsCount: 2,
+    riskLevel: 'Major',
+    status: 'Review',
+    findings: [
+      {
+        id: 'FND-103',
+        inspectionId: 'INSP-2026-398',
+        title: 'Safety berm height below 3/4th tyre diameter',
+        description: 'Berm height on outer curve measures 1.2m against required 1.8m for 240T dumpers.',
+        severity: 'Major',
+        aiSuggestion: 'Deploy D11 Dozer to build up embankment to minimum 1.8m height.',
+        aiConfidence: 94,
+        complianceRef: 'DGMS Circular No. 2 of 2020',
+        owner: 'Civil Maintenance Dept',
+        dueDate: '2026-10-05',
+        status: 'Pending Verification',
+        evidence: [
+          {
+            id: 'EVD-02',
+            type: 'Photo',
+            caption: 'Deficient haul road berm on Bench 5 curve',
+            url: 'https://images.unsplash.com/photo-1541888946425-d0fbb186a5b7?auto=format&fit=crop&w=600&q=80',
+            timestamp: '2026-10-03 14:20 PM',
+            location: 'Gevra Open Pit Bench 5',
+            uploader: 'S. N. Mishra'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'INSP-2026-392',
+    mine: 'Talcher Seam IX',
+    subsidiary: 'MCL',
+    area: 'Surface Coal Handling Plant',
+    type: 'Environmental Inspection',
+    officer: 'Neha Tiwari (Environment Officer)',
+    date: '2026-10-02',
+    findingsCount: 1,
+    riskLevel: 'Minor',
+    status: 'Verified',
+    findings: [
+      {
+        id: 'FND-104',
+        inspectionId: 'INSP-2026-392',
+        title: 'Dry fog dust suppression nozzle blockage',
+        description: '3 nozzles clogged at Transfer Point 2 causing ambient PM10 rise.',
+        severity: 'Minor',
+        aiSuggestion: 'Replace nozzle tips and flush water filter housing.',
+        aiConfidence: 89,
+        complianceRef: 'EP Act 1986 Schedule VI',
+        owner: 'Plant Mechanical Engineer',
+        dueDate: '2026-10-04',
+        status: 'Closed',
+        evidence: []
+      }
+    ]
+  },
+  {
+    id: 'INSP-2026-385',
+    mine: 'Jayant OCP',
+    subsidiary: 'NCL',
+    area: 'Quarry Bench 4 Highwall',
+    type: 'Structural Integrity',
+    officer: 'Dr. V. K. Singh (Geotechnical Specialist)',
+    date: '2026-09-30',
+    findingsCount: 0,
+    riskLevel: 'Low',
+    status: 'Closed',
+    findings: []
+  }
+];
+
+export const CORRECTIVE_ACTIONS_DATA: CorrectiveActionItem[] = [
+  {
+    id: 'ACT-2026-801',
+    source: 'INSP-2026-401',
+    issueTitle: 'Underground air velocity below statutory minimum standard',
+    mine: 'Moonidih UG',
+    subsidiary: 'BCCL',
+    owner: 'Safety Officer (Moonidih)',
+    ownerDepartment: 'Mine Safety & Ventilation',
+    priority: 'Critical',
+    dueDate: '2026-10-07',
+    ageDays: 2,
+    status: 'IN PROGRESS',
+    correctiveEvidence: []
+  },
+  {
+    id: 'ACT-2026-795',
+    source: 'INSP-2026-398',
+    issueTitle: 'Haul road berm height less than 3/4th tyre diameter',
+    mine: 'Gevra OCP',
+    subsidiary: 'SECL',
+    owner: 'Civil Maintenance Dept',
+    ownerDepartment: 'Mining Operations',
+    priority: 'High',
+    dueDate: '2026-10-05',
+    ageDays: 4,
+    status: 'PENDING VERIFICATION',
+    correctiveEvidence: [
+      {
+        id: 'EVD-ACT-01',
+        type: 'Photo',
+        caption: 'Rectified berm built up to 1.95m using dozer push',
+        url: 'https://images.unsplash.com/photo-1541888946425-d0fbb186a5b7?auto=format&fit=crop&w=600&q=80',
+        timestamp: '2026-10-05 09:30 AM',
+        location: 'Gevra Bench 5 Curve',
+        uploader: 'Civil Maintenance Supr.'
+      }
+    ]
+  },
+  {
+    id: 'ACT-2026-788',
+    source: 'VIO-2026-098',
+    issueTitle: 'Overburden dump water discharge TSS exceeds 100 mg/L limit',
+    mine: 'Kusmunda OCP',
+    subsidiary: 'SECL',
+    owner: 'Env. Officer Neha Tiwari',
+    ownerDepartment: 'Environment & ESG',
+    priority: 'High',
+    dueDate: '2026-10-04',
+    ageDays: 5,
+    status: 'VERIFIED',
+    verificationDate: '2026-10-05 11:00 AM',
+    verifiedBy: 'State Pollution Control Board Inspector'
+  },
+  {
+    id: 'ACT-2026-774',
+    source: 'VIO-2026-082',
+    issueTitle: 'Settling tank silt removal delayed at effluent discharge point',
+    mine: 'Umrer OCP',
+    subsidiary: 'WCL',
+    owner: 'Env. Inspector M. Joshi',
+    ownerDepartment: 'Civil & Environment',
+    priority: 'Medium',
+    dueDate: '2026-10-03',
+    ageDays: 6,
+    status: 'OPEN',
+    correctiveEvidence: []
+  },
+  {
+    id: 'ACT-2026-760',
+    source: 'INSP-2026-392',
+    issueTitle: 'Dry fog dust suppression nozzle blockage at Transfer Point 2',
+    mine: 'Talcher Seam IX',
+    subsidiary: 'MCL',
+    owner: 'Plant Mechanical Engineer',
+    ownerDepartment: 'Mechanical Engineering',
+    priority: 'Low',
+    dueDate: '2026-10-04',
+    ageDays: 3,
+    status: 'CLOSED',
+    verificationDate: '2026-10-04 16:30 PM',
+    verifiedBy: 'Colliery Engineer (MCL)'
+  }
+];
+
+export const AUDIT_TRAIL_DATA: AuditTrailItem[] = [
+  {
+    id: 'AUD-901',
+    timestamp: '2026-10-05 14:15:22',
+    user: 'Er. A. K. Banerjee',
+    role: 'DGMS Inspector',
+    action: 'Inspection Finding Created',
+    entity: 'INSP-2026-401 / FND-101',
+    previousState: 'Draft',
+    newState: 'Critical Finding Logged (CMR 153 Air Velocity)',
+    hash: 'sha256-b7f8a49c011e42a98f12c8e4d2'
+  },
+  {
+    id: 'AUD-895',
+    timestamp: '2026-10-05 11:30:10',
+    user: 'Neha Tiwari',
+    role: 'Environment Officer',
+    action: 'Corrective Action Verified',
+    entity: 'ACT-2026-788',
+    previousState: 'PENDING VERIFICATION',
+    newState: 'VERIFIED (SPCB TSS Clearance)',
+    hash: 'sha256-4a21d98e3b5210faef908121c9'
+  },
+  {
+    id: 'AUD-882',
+    timestamp: '2026-10-05 09:45:00',
+    user: 'S. N. Mishra',
+    role: 'Safety Officer',
+    action: 'Evidence Uploaded',
+    entity: 'ACT-2026-795 / EVD-ACT-01',
+    previousState: 'IN PROGRESS',
+    newState: 'PENDING VERIFICATION',
+    hash: 'sha256-89ec41d66a2b531a7c0019283d'
+  },
+  {
+    id: 'AUD-870',
+    timestamp: '2026-10-04 16:30:15',
+    user: 'B. Pattnaik',
+    role: 'Mine Manager',
+    action: 'Corrective Action Closed',
+    entity: 'ACT-2026-760',
+    previousState: 'VERIFIED',
+    newState: 'CLOSED',
+    hash: 'sha256-c4d9e0114a51187bf2904128a1'
+  }
+];
+
 export const TRANSLATIONS: Record<string, { en: string; hi: string }> = {
   appName: { en: 'Coal India Smart Governance & Compliance System', hi: 'कोल इंडिया स्मार्ट गवर्नेंस एवं अनुपालन निगरानी प्रणाली' },
   orgTag: { en: 'Ministry of Coal · Coal India Limited · Problem Statement ID: 26024', hi: 'कोयला मंत्रालय · कोल इंडिया लिमिटेड · समस्या विवरण आईडी: 26024' },
   filterMine: { en: 'Select Subsidiary / Mine', hi: 'सहायक कंपनी / खदान चुनें' },
   filterDate: { en: 'Date Range', hi: 'दिनांक सीमा' },
   filterShift: { en: 'Shift', hi: 'शिफ्ट' },
-  searchPlaceholder: { en: 'Search mines, zones, equipment, rules (CMR 153)...', hi: 'खदानें, ज़ोन, उपकरण, नियम खोजें...' },
-  liveStatus: { en: 'LIVE TELEMETRY', hi: 'लाइव टेलीमेट्री' },
-  refreshingIn: { en: 'Auto-refresh in', hi: 'स्वतः ताज़ा होने में' },
+  searchPlaceholder: { en: 'Search inspections, violations, rules (CMR 153)...', hi: 'निरीक्षण, उल्लंघन, नियम खोजें...' },
   exportReport: { en: 'Export Report', hi: 'रिपोर्ट निर्यात' },
   role: { en: 'Role', hi: 'भूमिका' },
-  tabSafety: { en: 'Safety & DGMS', hi: 'सुरक्षा एवं डीजीएमएस' },
-  tabProduction: { en: 'Production & Offtake', hi: 'उत्पादन एवं प्रेषण' },
-  tabEnvironment: { en: 'Environment & ESG', hi: 'पर्यावरण एवं ईएसजी' },
+  tabOverview: { en: 'Governance Overview', hi: 'गवर्नेंस अवलोकन' },
+  tabInspections: { en: 'Inspections', hi: 'निरीक्षण प्रबंधन' },
   tabCompliance: { en: 'Statutory Compliance', hi: 'वैधानिक अनुपालन' },
-  tabFleet: { en: 'Fleet & HEMM', hi: 'फ्लीट एवं उपकरण' },
-  tabWorkforce: { en: 'Workforce & Muster', hi: 'कार्यबल एवं मस्टर' },
-  tabGis: { en: 'Geospatial & GIS', hi: 'भू-स्थानिक एवं जीआईएस' },
-  tabAlerts: { en: 'Alerts & Escalation', hi: 'चेतावनी एवं एस्केलेशन' },
-  tabAi: { en: 'AI & Predictive Risk', hi: 'एआई एवं पूर्वानुमानात्मक जोखिम' },
-  tabReports: { en: 'Reports & Audit Locker', hi: 'रिपोर्ट एवं ऑडिट लॉकर' }
+  tabActions: { en: 'Corrective Actions', hi: 'सुधारात्मक कार्रवाई' },
+  tabSafety: { en: 'Safety Management', hi: 'सुरक्षा प्रबंधन' },
+  tabEnvironment: { en: 'Environment & ESG', hi: 'पर्यावरण एवं ईएसजी' },
+  tabOperations: { en: 'Operations', hi: 'संचालन प्रबंधन' },
+  tabGis: { en: 'GIS & Mine Map', hi: 'जीआईएस एवं खदान मानचित्र' },
+  tabAi: { en: 'AI-Assisted Insights', hi: 'एआई सहायक अंतर्दृष्टि' },
+  tabReports: { en: 'Reports & Audit', hi: 'रिपोर्ट एवं ऑडिट लॉकर' },
+  tabNotifications: { en: 'Notifications', hi: 'अधिसूचना केंद्र' },
+  tabAdmin: { en: 'Administration', hi: 'प्रशासन एवं अनुमतियां' }
 };
+
