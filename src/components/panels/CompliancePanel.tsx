@@ -28,6 +28,19 @@ export const CompliancePanel: React.FC<CompliancePanelProps> = ({ subsidiary }) 
   return (
     <div className="space-y-5">
       
+      {/* Header Banner */}
+      <div className="flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
+        <div>
+          <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <FileWarning className="w-5 h-5 text-amber-500" />
+            Statutory & Compliance Management
+          </h2>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Monitor Mines Act 1952, CMR 2017 regulations, Environmental Clearances (EP Act), and Contractor Compliance.
+          </p>
+        </div>
+      </div>
+      
       {/* Statutory Pillar Breakdown */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
         <div className="p-3.5 rounded-xl border border-blue-200 dark:border-blue-500/30 bg-blue-50/70 dark:bg-blue-950/20 text-slate-800 dark:text-slate-200 shadow-xs">

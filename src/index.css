@@ -4,15 +4,20 @@
 
 @layer base {
   body {
-    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     background-color: #f8fafc;
     color: #0f172a;
+    letter-spacing: -0.011em;
   }
 
   .dark body, body.dark {
     background-color: #020617;
     color: #f8fafc;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    letter-spacing: -0.02em;
   }
 
   .font-mono, .tabular-nums {
