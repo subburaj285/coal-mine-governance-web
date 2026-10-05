@@ -67,29 +67,54 @@ export const Sidebar: React.FC<SidebarProps> = ({
     }
   }, [activeTab]);
 
-  const navItems = [
-    { id: 'overview' as NavTab, label: 'Governance Overview', icon: LayoutDashboard },
-    { id: 'inspections' as NavTab, label: 'Inspections', icon: ClipboardList, badge: 18 },
-    { id: 'compliance' as NavTab, label: 'Statutory Compliance', icon: Scale, badge: openViolationsCount },
-    { id: 'actions' as NavTab, label: 'Corrective Actions', icon: CheckCircle2, badge: overdueActionsCount, badgeColor: 'bg-rose-600' },
-    { id: 'safety' as NavTab, label: 'Safety Management', icon: ShieldAlert },
-    { id: 'environment' as NavTab, label: 'Environment & ESG', icon: Leaf },
+  const sections = [
     {
-      id: 'operations' as NavTab,
-      label: 'Operations',
-      icon: Layers,
-      hasSubmenu: true,
-      subItems: [
-        { id: 'production' as OperationsSubTab, label: 'Production & Offtake' },
-        { id: 'workforce' as OperationsSubTab, label: 'Workforce & Muster' },
-        { id: 'equipment' as OperationsSubTab, label: 'Equipment & Fleet' }
+      group: 'MAIN',
+      items: [
+        { id: 'overview' as NavTab, label: 'Governance Overview', icon: LayoutDashboard }
       ]
     },
-    { id: 'gis' as NavTab, label: 'GIS & Mine Map', icon: Compass },
-    { id: 'ai' as NavTab, label: 'AI-Assisted Insights', icon: Sparkles, isAi: true },
-    { id: 'reports' as NavTab, label: 'Reports & Audit', icon: FileSpreadsheet },
-    { id: 'notifications' as NavTab, label: 'Notifications', icon: Bell, badge: unreadNotificationsCount },
-    { id: 'admin' as NavTab, label: 'Administration', icon: SlidersHorizontal }
+    {
+      group: 'GOVERNANCE',
+      items: [
+        { id: 'inspections' as NavTab, label: 'Inspections', icon: ClipboardList, badge: 18 },
+        { id: 'compliance' as NavTab, label: 'Statutory Compliance', icon: Scale, badge: openViolationsCount },
+        { id: 'actions' as NavTab, label: 'Corrective Actions', icon: CheckCircle2, badge: overdueActionsCount, badgeColor: 'bg-rose-600' }
+      ]
+    },
+    {
+      group: 'OPERATIONS',
+      items: [
+        { id: 'safety' as NavTab, label: 'Safety Management', icon: ShieldAlert },
+        { id: 'environment' as NavTab, label: 'Environment & ESG', icon: Leaf },
+        {
+          id: 'operations' as NavTab,
+          label: 'Operations',
+          icon: Layers,
+          hasSubmenu: true,
+          subItems: [
+            { id: 'production' as OperationsSubTab, label: 'Production & Offtake' },
+            { id: 'workforce' as OperationsSubTab, label: 'Workforce & Muster' },
+            { id: 'equipment' as OperationsSubTab, label: 'Equipment & Fleet' }
+          ]
+        }
+      ]
+    },
+    {
+      group: 'INTELLIGENCE',
+      items: [
+        { id: 'gis' as NavTab, label: 'GIS & Mine Map', icon: Compass },
+        { id: 'ai' as NavTab, label: 'Risk Insights', icon: Sparkles, isAi: true }
+      ]
+    },
+    {
+      group: 'SYSTEM',
+      items: [
+        { id: 'reports' as NavTab, label: 'Reports & Audit', icon: FileSpreadsheet },
+        { id: 'notifications' as NavTab, label: 'Notifications', icon: Bell, badge: unreadNotificationsCount },
+        { id: 'admin' as NavTab, label: 'Administration', icon: SlidersHorizontal }
+      ]
+    }
   ];
 
   return (
@@ -129,30 +154,88 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Role Badge Indicator */}
       {!collapsed && (
-        <div className="px-3 py-2.5 mx-3 mt-3 rounded-lg bg-slate-800/80 border border-slate-700/60 flex items-center justify-between text-xs">
+        <div className="px-3 py-2 mx-3 mt-3 rounded-lg bg-slate-800/80 border border-slate-700/60 flex items-center justify-between text-xs">
           <div className="flex flex-col">
-            <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Role Permission</span>
-            <span className="font-medium text-blue-400 truncate max-w-[150px]">{role}</span>
+            <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider">Role Lens</span>
+            <span className="font-semibold text-blue-400 truncate max-w-[150px]">{role}</span>
           </div>
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="Role Active" />
         </div>
       )}
 
-      {/* Navigation Links */}
-      <nav className="flex-1 overflow-y-auto px-3 py-3 space-y-1 no-scrollbar">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = activeTab === item.id;
+      {/* Navigation Sections */}
+      <nav className="flex-1 overflow-y-auto px-3 py-3 space-y-4 no-scrollbar">
+        {sections.map((sec, secIdx) => (
+          <div key={secIdx} className="space-y-1">
+            {!collapsed && sec.group !== 'MAIN' && (
+              <div className="px-3 text-[9px] font-bold font-mono text-slate-500 uppercase tracking-widest mb-1">
+                {sec.group}
+              </div>
+            )}
 
-          if (item.hasSubmenu) {
-            return (
-              <div key={item.id} className="space-y-1">
+            {sec.items.map((item) => {
+              const Icon = item.icon;
+              const isActive = activeTab === item.id;
+
+              if (item.hasSubmenu) {
+                return (
+                  <div key={item.id} className="space-y-1">
+                    <button
+                      onClick={() => {
+                        onSelectTab('operations');
+                        setOpsExpanded(!opsExpanded);
+                      }}
+                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+                        isActive
+                          ? 'bg-blue-600 text-white shadow-xs'
+                          : 'text-slate-300 hover:text-white hover:bg-slate-800/70'
+                      }`}
+                      title={collapsed ? item.label : undefined}
+                    >
+                      <div className="flex items-center gap-3">
+                        <Icon className="w-4 h-4 shrink-0 text-blue-400" />
+                        {!collapsed && <span>{item.label}</span>}
+                      </div>
+                      {!collapsed && (
+                        <ChevronDown
+                          className={`w-3.5 h-3.5 transition-transform duration-200 ${opsExpanded ? 'rotate-180' : ''}`}
+                        />
+                      )}
+                    </button>
+
+                    {/* Operations Submenu */}
+                    {!collapsed && opsExpanded && (
+                      <div className="pl-9 pr-1 space-y-1">
+                        {item.subItems?.map((sub) => {
+                          const isSubActive = activeTab === 'operations' && operationsSubTab === sub.id;
+                          return (
+                            <button
+                              key={sub.id}
+                              onClick={() => {
+                                onSelectTab('operations');
+                                onSelectOperationsSubTab(sub.id);
+                              }}
+                              className={`w-full text-left px-3 py-1.5 rounded-md text-[11px] transition-colors cursor-pointer ${
+                                isSubActive
+                                  ? 'text-white font-semibold bg-slate-800 border-l-2 border-blue-500'
+                                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+                              }`}
+                            >
+                              {sub.label}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+
+              return (
                 <button
-                  onClick={() => {
-                    onSelectTab('operations');
-                    setOpsExpanded(!opsExpanded);
-                  }}
-                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+                  key={item.id}
+                  onClick={() => onSelectTab(item.id)}
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                     isActive
                       ? 'bg-blue-600 text-white shadow-xs'
                       : 'text-slate-300 hover:text-white hover:bg-slate-800/70'
@@ -160,85 +243,37 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   title={collapsed ? item.label : undefined}
                 >
                   <div className="flex items-center gap-3">
-                    <Icon className="w-4 h-4 shrink-0 text-blue-400" />
-                    {!collapsed && <span>{item.label}</span>}
-                  </div>
-                  {!collapsed && (
-                    <ChevronDown
-                      className={`w-3.5 h-3.5 transition-transform duration-200 ${opsExpanded ? 'rotate-180' : ''}`}
+                    <Icon
+                      className={`w-4 h-4 shrink-0 ${
+                        item.isAi ? 'text-purple-400' : isActive ? 'text-white' : 'text-slate-400'
+                      }`}
                     />
-                  )}
-                </button>
-
-                {/* Operations Submenu */}
-                {!collapsed && opsExpanded && (
-                  <div className="pl-9 pr-1 space-y-1">
-                    {item.subItems?.map((sub) => {
-                      const isSubActive = activeTab === 'operations' && operationsSubTab === sub.id;
-                      return (
-                        <button
-                          key={sub.id}
-                          onClick={() => {
-                            onSelectTab('operations');
-                            onSelectOperationsSubTab(sub.id);
-                          }}
-                          className={`w-full text-left px-3 py-1.5 rounded-md text-xs transition-colors cursor-pointer ${
-                            isSubActive
-                              ? 'text-white font-semibold bg-slate-800 border-l-2 border-blue-500'
-                              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
-                          }`}
-                        >
-                          {sub.label}
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            );
-          }
-
-          return (
-            <button
-              key={item.id}
-              onClick={() => onSelectTab(item.id)}
-              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                isActive
-                  ? 'bg-blue-600 text-white shadow-xs'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800/70'
-              }`}
-              title={collapsed ? item.label : undefined}
-            >
-              <div className="flex items-center gap-3">
-                <Icon
-                  className={`w-4 h-4 shrink-0 ${
-                    item.isAi ? 'text-purple-400' : isActive ? 'text-white' : 'text-slate-400'
-                  }`}
-                />
-                {!collapsed && (
-                  <span className="flex items-center gap-1.5">
-                    {item.label}
-                    {item.isAi && (
-                      <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">
-                        AI
+                    {!collapsed && (
+                      <span className="flex items-center gap-1.5">
+                        {item.label}
+                        {item.isAi && (
+                          <span className="text-[8px] font-mono px-1 py-0.2 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold">
+                            AI
+                          </span>
+                        )}
                       </span>
                     )}
-                  </span>
-                )}
-              </div>
+                  </div>
 
-              {!collapsed && item.badge !== undefined && item.badge > 0 && (
-                <span
-                  className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
-                    item.badgeColor || 'bg-slate-800 text-slate-200'
-                  }`}
-                >
-                  {item.badge}
-                </span>
-              )}
-            </button>
-          );
-        })}
+                  {!collapsed && item.badge !== undefined && item.badge > 0 && (
+                    <span
+                      className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                        item.badgeColor || 'bg-slate-800 text-slate-200'
+                      }`}
+                    >
+                      {item.badge}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        ))}
       </nav>
 
       {/* Footer Info */}

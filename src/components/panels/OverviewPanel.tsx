@@ -7,24 +7,27 @@ import {
   CheckCircle2,
   Clock,
   ChevronRight,
-  TrendingUp,
   Filter,
   FileCheck2,
+  ArrowRight,
+  Camera,
+  History,
+  ShieldCheck,
+  Sparkles,
   ArrowUpRight,
   ArrowDownRight
 } from 'lucide-react';
 import {
   SubsidiaryId,
-  InspectionRecord,
-  CorrectiveActionItem
+  InspectionRecord
 } from '../../types/dashboard';
 import {
-  GOVERNANCE_KPIS,
   VIOLATIONS_DATA,
   INSPECTIONS_DATA,
   CORRECTIVE_ACTIONS_DATA,
   ACTIVE_ALERTS
 } from '../../data/mockData';
+import { GovernanceCaseModal } from '../GovernanceCase/GovernanceCaseModal';
 
 interface OverviewPanelProps {
   subsidiary: SubsidiaryId;
@@ -37,7 +40,8 @@ export const OverviewPanel: React.FC<OverviewPanelProps> = ({
   onNavigateTab,
   onSelectInspection
 }) => {
-  const [trendPeriod, setTrendPeriod] = useState<'7d' | '30d'>('7d');
+  const [activeWorkflowStep, setActiveWorkflowStep] = useState<number>(1);
+  const [isCaseModalOpen, setIsCaseModalOpen] = useState<boolean>(false);
 
   // Filter data by selected subsidiary
   const filteredViolations = VIOLATIONS_DATA.filter(
@@ -56,86 +60,252 @@ export const OverviewPanel: React.FC<OverviewPanelProps> = ({
     (a) => a.status === 'OPEN' || a.status === 'IN PROGRESS' || a.status === 'ASSIGNED'
   );
 
+  const workflowSteps = [
+    {
+      num: 1,
+      title: '1. Field Inspection',
+      icon: ClipboardList,
+      color: 'border-blue-500 text-blue-600 bg-blue-50 dark:bg-blue-950/40',
+      description: 'Field inspection creates a verified finding with evidence metadata.'
+    },
+    {
+      num: 2,
+      title: '2. Finding & Evidence',
+      icon: Camera,
+      color: 'border-amber-500 text-amber-600 bg-amber-50 dark:bg-amber-950/40',
+      description: 'Non-compliance detected with photographic proof, timestamp, and GPS coordinates.'
+    },
+    {
+      num: 3,
+      title: '3. Compliance Mapping',
+      icon: Scale,
+      color: 'border-purple-500 text-purple-600 bg-purple-50 dark:bg-purple-950/40',
+      description: 'Finding is mapped directly to the statutory requirement (e.g. CMR 2017 Reg 153).'
+    },
+    {
+      num: 4,
+      title: '4. Corrective Action',
+      icon: CheckCircle2,
+      color: 'border-rose-500 text-rose-600 bg-rose-50 dark:bg-rose-950/40',
+      description: 'Responsible owner receives a corrective action notice with fixed SLA deadline.'
+    },
+    {
+      num: 5,
+      title: '5. Verification & Closure',
+      icon: ShieldCheck,
+      color: 'border-emerald-500 text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40',
+      description: 'Closure requires corrective evidence proof + authorized manager verification.'
+    },
+    {
+      num: 6,
+      title: '6. Immutable Audit Trail',
+      icon: History,
+      color: 'border-slate-500 text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800',
+      description: 'Every state transition is cryptographically hashed for regulatory transparency.'
+    }
+  ];
+
   return (
     <div className="space-y-6">
       
-      {/* Overview Header & Filter Ribbon */}
-      <div className="flex flex-wrap items-center justify-between gap-4 bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
-        <div>
-          <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <Scale className="w-5 h-5 text-blue-600" />
-            Governance Overview
-          </h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            Current compliance, inspection, risk and corrective-action status across colliery operations.
-          </p>
+      {/* HERO BANNER — CORE PRODUCT MESSAGE */}
+      <div className="p-6 rounded-2xl border border-blue-200 dark:border-blue-900/60 bg-gradient-to-r from-blue-900 via-slate-900 to-indigo-950 text-white shadow-lg space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-blue-800/60 pb-4">
+          <div>
+            <span className="text-[10px] font-mono uppercase tracking-widest text-blue-300 font-bold">
+              SIH Problem Statement ID: 26024 · Ministry of Coal · Coal India Limited
+            </span>
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white mt-1">
+              From Field Finding to Verified Closure
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-300 max-w-3xl mt-1 leading-relaxed">
+              One connected governance workflow linking inspection evidence, compliance, corrective action, verification, and audit.
+            </p>
+          </div>
+
+          <button
+            onClick={() => setIsCaseModalOpen(true)}
+            className="px-5 py-2.5 rounded-xl bg-blue-500 hover:bg-blue-400 text-white font-bold text-xs flex items-center gap-2 transition-all shadow-md shrink-0 cursor-pointer"
+          >
+            <Sparkles className="w-4 h-4 text-amber-300" />
+            <span>Interactive 2-Min Judge Demo →</span>
+          </button>
         </div>
 
-        <div className="flex items-center gap-2 text-xs">
-          <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium">
-            <Filter className="w-3.5 h-3.5 text-slate-400" />
-            Subsidiary: <b className="text-blue-600 dark:text-blue-400">{subsidiary}</b>
-          </span>
-          <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40 font-medium">
-            <span className="w-2 h-2 rounded-full bg-emerald-500" />
-            Audited & Verified
-          </span>
-        </div>
-      </div>
+        {/* HERO WORKFLOW STEPPER BAR (THE HERO visual element) */}
+        <div className="space-y-2">
+          <div className="text-[11px] font-mono font-bold text-blue-300 uppercase tracking-wider">
+            Connected Governance Workflow Lifecycle (Click any step to inspect):
+          </div>
 
-      {/* 4 PRIMARY KPI CARDS ONLY */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {GOVERNANCE_KPIS.map((kpi) => {
-          let Icon = Scale;
-          let colorClass = 'text-blue-600 bg-blue-50 dark:bg-blue-950/50 border-blue-200 dark:border-blue-900';
-          let navTarget = 'compliance';
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+            {workflowSteps.map((st) => {
+              const Icon = st.icon;
+              const isActive = activeWorkflowStep === st.num;
+              return (
+                <button
+                  key={st.num}
+                  onClick={() => setActiveWorkflowStep(st.num)}
+                  className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                    isActive
+                      ? 'bg-blue-600 border-white text-white shadow-md font-bold'
+                      : 'bg-slate-800/80 border-slate-700 text-slate-300 hover:bg-slate-800'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <Icon className="w-4 h-4 text-blue-300" />
+                    <span className="text-[9px] font-mono text-slate-400">Step {st.num}</span>
+                  </div>
+                  <div className="text-xs font-bold truncate">{st.title.split('. ')[1]}</div>
+                </button>
+              );
+            })}
+          </div>
 
-          if (kpi.id === 'gov-risks') {
-            Icon = ShieldAlert;
-            colorClass = 'text-amber-600 bg-amber-50 dark:bg-amber-950/50 border-amber-200 dark:border-amber-900';
-            navTarget = 'compliance';
-          } else if (kpi.id === 'gov-overdue') {
-            Icon = Clock;
-            colorClass = 'text-rose-600 bg-rose-50 dark:bg-rose-950/50 border-rose-200 dark:border-rose-900';
-            navTarget = 'actions';
-          } else if (kpi.id === 'gov-inspections') {
-            Icon = ClipboardList;
-            colorClass = 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/50 border-emerald-200 dark:border-emerald-900';
-            navTarget = 'inspections';
-          }
-
-          return (
-            <div
-              key={kpi.id}
-              onClick={() => onNavigateTab(navTarget)}
-              className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:shadow-md transition-all cursor-pointer group"
+          {/* Interactive Step Explanation Box */}
+          <div className="p-3 rounded-xl bg-slate-800/90 border border-slate-700/80 text-xs text-slate-200 flex items-center justify-between">
+            <span className="font-semibold text-blue-300">
+              Stage {activeWorkflowStep}: {workflowSteps[activeWorkflowStep - 1].description}
+            </span>
+            <button
+              onClick={() => setIsCaseModalOpen(true)}
+              className="text-[11px] text-amber-300 font-bold hover:underline shrink-0 ml-2"
             >
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">{kpi.title}</span>
-                <div className={`p-2 rounded-lg border ${colorClass}`}>
-                  <Icon className="w-4 h-4" />
-                </div>
-              </div>
-
-              <div className="flex items-baseline justify-between">
-                <span className="text-2xl font-bold font-mono text-slate-900 dark:text-white">{kpi.value}</span>
-                <span className={`text-xs font-semibold flex items-center ${kpi.isPositive ? 'text-emerald-600' : 'text-rose-600'}`}>
-                  {kpi.isPositive ? <ArrowUpRight className="w-3.5 h-3.5" /> : <ArrowDownRight className="w-3.5 h-3.5" />}
-                  {kpi.trend}
-                </span>
-              </div>
-
-              <div className="mt-2 text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-between">
-                <span>{kpi.subtext}</span>
-                <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
-              </div>
-            </div>
-          );
-        })}
+              See Example Case →
+            </button>
+          </div>
+        </div>
       </div>
 
-      {/* PRIORITY ATTENTION: "What needs my attention right now?" */}
-      <div className="p-4 rounded-xl border border-rose-200 dark:border-rose-900/60 bg-gradient-to-r from-rose-50/70 via-white to-amber-50/50 dark:from-rose-950/30 dark:via-slate-900 dark:to-amber-950/20 shadow-xs space-y-3">
+      {/* 3 SIMPLIFIED GOVERNANCE STATUS CARDS ONLY */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div
+          onClick={() => onNavigateTab('compliance')}
+          className="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:shadow-md transition-all cursor-pointer group space-y-2"
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-slate-600 dark:text-slate-400">Compliance Health Score</span>
+            <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-950 text-blue-600 border border-blue-200">
+              <Scale className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="flex items-baseline justify-between">
+            <span className="text-3xl font-bold font-mono text-slate-900 dark:text-white">96.8%</span>
+            <span className="text-xs font-semibold text-emerald-600">↑ +1.2%</span>
+          </div>
+          <div className="text-[11px] text-slate-500 flex justify-between">
+            <span>Statutory Aggregate</span>
+            <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+          </div>
+        </div>
+
+        <div
+          onClick={() => onNavigateTab('compliance')}
+          className="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:shadow-md transition-all cursor-pointer group space-y-2"
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-slate-600 dark:text-slate-400">High-Risk Non-Compliance</span>
+            <div className="p-2 rounded-lg bg-amber-50 dark:bg-amber-950 text-amber-600 border border-amber-200">
+              <ShieldAlert className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="flex items-baseline justify-between">
+            <span className="text-3xl font-bold font-mono text-slate-900 dark:text-white">3</span>
+            <span className="text-xs font-semibold text-amber-600">Critical Priority</span>
+          </div>
+          <div className="text-[11px] text-slate-500 flex justify-between">
+            <span>Requires Management Action</span>
+            <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+          </div>
+        </div>
+
+        <div
+          onClick={() => onNavigateTab('actions')}
+          className="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:shadow-md transition-all cursor-pointer group space-y-2"
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-slate-600 dark:text-slate-400">Overdue Corrective Actions</span>
+            <div className="p-2 rounded-lg bg-rose-50 dark:bg-rose-950 text-rose-600 border border-rose-200">
+              <Clock className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="flex items-baseline justify-between">
+            <span className="text-3xl font-bold font-mono text-rose-600">6</span>
+            <span className="text-xs font-semibold text-rose-600">Remediation Pending</span>
+          </div>
+          <div className="text-[11px] text-slate-500 flex justify-between">
+            <span>Pending Evidence & Signoff</span>
+            <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+          </div>
+        </div>
+      </div>
+
+      {/* FEATURED EXAMPLE GOVERNANCE CASE CARD */}
+      <div className="p-5 rounded-2xl border border-blue-200 dark:border-blue-800/80 bg-white dark:bg-slate-900 shadow-sm space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300">
+                PROMINENT DEMO CASE
+              </span>
+              <span className="text-xs font-bold text-rose-600">Critical Non-Compliance</span>
+            </div>
+            <h3 className="font-bold text-base text-slate-900 dark:text-white mt-1">
+              Featured Case: CASE-2026-00421 — Underground Air Velocity Deficiency
+            </h3>
+            <p className="text-xs text-slate-500">Moonidih Underground Colliery (BCCL) · Mapped to CMR 2017 Regulation 153(2)</p>
+          </div>
+
+          <button
+            onClick={() => setIsCaseModalOpen(true)}
+            className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer"
+          >
+            <span>View Complete Case Flow →</span>
+          </button>
+        </div>
+
+        {/* Horizontal Case Flow Stepper Preview */}
+        <div className="grid grid-cols-1 sm:grid-cols-6 gap-2 text-xs">
+          <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-800 space-y-1">
+            <span className="text-[9px] font-mono text-slate-400 block">1. INSPECTION</span>
+            <span className="font-bold text-slate-900 dark:text-white">DGMS Sirdar Audit</span>
+            <span className="text-[10px] text-slate-500 block">Anemometer test</span>
+          </div>
+
+          <div className="p-2.5 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 text-amber-900 dark:text-amber-200 space-y-1">
+            <span className="text-[9px] font-mono text-amber-600 block">2. FINDING</span>
+            <span className="font-bold">Air Velocity 1.1 m/s</span>
+            <span className="text-[10px] text-amber-700 block">Photo & GPS evidence</span>
+          </div>
+
+          <div className="p-2.5 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-200 text-purple-900 dark:text-purple-200 space-y-1">
+            <span className="text-[9px] font-mono text-purple-600 block">3. COMPLIANCE</span>
+            <span className="font-bold">CMR 2017 Reg 153</span>
+            <span className="text-[10px] text-purple-700 block">Below 1.5 m/s std</span>
+          </div>
+
+          <div className="p-2.5 rounded-lg bg-rose-50 dark:bg-rose-950/30 border border-rose-200 text-rose-900 dark:text-rose-200 space-y-1">
+            <span className="text-[9px] font-mono text-rose-600 block">4. ACTION</span>
+            <span className="font-bold">ACT-2026-801</span>
+            <span className="text-[10px] text-rose-700 block">Fan House #2 overhaul</span>
+          </div>
+
+          <div className="p-2.5 rounded-lg bg-cyan-50 dark:bg-cyan-950/30 border border-cyan-200 text-cyan-900 dark:text-cyan-200 space-y-1">
+            <span className="text-[9px] font-mono text-cyan-600 block">5. EVIDENCE</span>
+            <span className="font-bold">Photo Proof Upload</span>
+            <span className="text-[10px] text-cyan-700 block">Pitch set to +4°</span>
+          </div>
+
+          <div className="p-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 text-emerald-900 dark:text-emerald-200 space-y-1">
+            <span className="text-[9px] font-mono text-emerald-600 block">6. VERIFIED</span>
+            <span className="font-bold">Manager Signoff</span>
+            <span className="text-[10px] text-emerald-700 block">SHA-256 Audit Log</span>
+          </div>
+        </div>
+      </div>
+
+      {/* PRIORITY ATTENTION BLOCK */}
+      <div className="p-4 rounded-2xl border border-rose-200 dark:border-rose-900/60 bg-gradient-to-r from-rose-50/70 via-white to-amber-50/50 dark:from-rose-950/30 dark:via-slate-900 dark:to-amber-950/20 shadow-xs space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <AlertTriangle className="w-4 h-4 text-rose-600 animate-pulse" />
@@ -149,7 +319,7 @@ export const OverviewPanel: React.FC<OverviewPanelProps> = ({
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
           <div
             onClick={() => onNavigateTab('compliance')}
-            className="p-3 rounded-lg border border-rose-200 dark:border-rose-800/60 bg-white dark:bg-slate-900 hover:border-rose-400 cursor-pointer transition-all space-y-1 shadow-2xs group"
+            className="p-3 rounded-xl border border-rose-200 dark:border-rose-800/60 bg-white dark:bg-slate-900 hover:border-rose-400 cursor-pointer transition-all space-y-1 shadow-2xs group"
           >
             <div className="flex items-center justify-between">
               <span className="font-bold text-rose-600 font-mono text-base">3 Critical</span>
@@ -161,7 +331,7 @@ export const OverviewPanel: React.FC<OverviewPanelProps> = ({
 
           <div
             onClick={() => onNavigateTab('actions')}
-            className="p-3 rounded-lg border border-amber-200 dark:border-amber-800/60 bg-white dark:bg-slate-900 hover:border-amber-400 cursor-pointer transition-all space-y-1 shadow-2xs group"
+            className="p-3 rounded-xl border border-amber-200 dark:border-amber-800/60 bg-white dark:bg-slate-900 hover:border-amber-400 cursor-pointer transition-all space-y-1 shadow-2xs group"
           >
             <div className="flex items-center justify-between">
               <span className="font-bold text-amber-600 font-mono text-base">6 Overdue</span>
@@ -173,7 +343,7 @@ export const OverviewPanel: React.FC<OverviewPanelProps> = ({
 
           <div
             onClick={() => onNavigateTab('reports')}
-            className="p-3 rounded-lg border border-blue-200 dark:border-blue-800/60 bg-white dark:bg-slate-900 hover:border-blue-400 cursor-pointer transition-all space-y-1 shadow-2xs group"
+            className="p-3 rounded-xl border border-blue-200 dark:border-blue-800/60 bg-white dark:bg-slate-900 hover:border-blue-400 cursor-pointer transition-all space-y-1 shadow-2xs group"
           >
             <div className="flex items-center justify-between">
               <span className="font-bold text-blue-600 font-mono text-base">2 Filing</span>
@@ -185,7 +355,7 @@ export const OverviewPanel: React.FC<OverviewPanelProps> = ({
 
           <div
             onClick={() => onNavigateTab('inspections')}
-            className="p-3 rounded-lg border border-purple-200 dark:border-purple-800/60 bg-white dark:bg-slate-900 hover:border-purple-400 cursor-pointer transition-all space-y-1 shadow-2xs group"
+            className="p-3 rounded-xl border border-purple-200 dark:border-purple-800/60 bg-white dark:bg-slate-900 hover:border-purple-400 cursor-pointer transition-all space-y-1 shadow-2xs group"
           >
             <div className="flex items-center justify-between">
               <span className="font-bold text-purple-600 font-mono text-base">1 Verification</span>
@@ -197,169 +367,28 @@ export const OverviewPanel: React.FC<OverviewPanelProps> = ({
         </div>
       </div>
 
-      {/* SECTION 1: RISK & COMPLIANCE (TWO COLUMNS) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        
-        {/* LEFT: Compliance Overview Breakdown (5 cols) */}
-        <div className="lg:col-span-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-xs">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
-              <FileCheck2 className="w-4 h-4 text-emerald-600" />
-              Compliance Status Overview
-            </h3>
-            <span className="text-[11px] text-slate-500 dark:text-slate-400 font-mono">318 Colliery Leases</span>
-          </div>
-
-          <div className="space-y-3">
-            {[
-              { label: 'Verified Compliant', count: 184, percent: 84, color: 'bg-emerald-500' },
-              { label: 'Under Review / Audit', count: 22, percent: 10, color: 'bg-blue-500' },
-              { label: 'Due Soon (within 14d)', count: 9, percent: 4, color: 'bg-amber-500' },
-              { label: 'Overdue Non-Compliance', count: 4, percent: 2, color: 'bg-rose-500' }
-            ].map((item, idx) => (
-              <div key={idx} className="space-y-1">
-                <div className="flex justify-between text-xs">
-                  <span className="font-medium text-slate-700 dark:text-slate-300">{item.label}</span>
-                  <span className="font-mono text-slate-900 dark:text-white font-bold">
-                    {item.count} ({item.percent}%)
-                  </span>
-                </div>
-                <div className="w-full h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                  <div className={`h-full ${item.color}`} style={{ width: `${item.percent}%` }} />
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-2 text-xs">
-            <div className="p-2 rounded bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-800">
-              <span className="text-[10px] text-slate-500">Mines Act 1952 Rate</span>
-              <div className="font-bold font-mono text-slate-900 dark:text-white text-sm">97.6%</div>
-            </div>
-            <div className="p-2 rounded bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-800">
-              <span className="text-[10px] text-slate-500">EP Act 1986 Rate</span>
-              <div className="font-bold font-mono text-slate-900 dark:text-white text-sm">95.8%</div>
-            </div>
-          </div>
+      {/* RECENT GOVERNANCE ACTIVITY */}
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-xs space-y-3">
+        <div className="flex items-center justify-between">
+          <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+            <ClipboardList className="w-4 h-4 text-blue-600" />
+            Recent Governance Activity & Field Audits
+          </h3>
+          <button
+            onClick={() => onNavigateTab('inspections')}
+            className="text-xs text-blue-600 dark:text-blue-400 font-semibold hover:underline"
+          >
+            View All Inspections →
+          </button>
         </div>
 
-        {/* RIGHT: Priority Risks Table (7 cols) */}
-        <div className="lg:col-span-7 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-xs">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 text-amber-500" />
-              Priority Statutory Risks
-            </h3>
-            <button
-              onClick={() => onNavigateTab('compliance')}
-              className="text-xs text-blue-600 dark:text-blue-400 hover:underline font-semibold"
-            >
-              View All Violations →
-            </button>
-          </div>
-
-          <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-800">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 dark:bg-slate-950 text-slate-600 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800 font-semibold">
-                <tr>
-                  <th className="py-2.5 px-3">Issue / Rule</th>
-                  <th className="py-2.5 px-3">Mine / Area</th>
-                  <th className="py-2.5 px-3">Severity</th>
-                  <th className="py-2.5 px-3">Age</th>
-                  <th className="py-2.5 px-3">Responsible Owner</th>
-                  <th className="py-2.5 px-3">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                {filteredViolations.map((v) => (
-                  <tr
-                    key={v.id}
-                    onClick={() => onNavigateTab('compliance')}
-                    className="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors"
-                  >
-                    <td className="py-2.5 px-3">
-                      <div className="font-semibold text-slate-900 dark:text-white truncate max-w-[180px]" title={v.description}>
-                        {v.description}
-                      </div>
-                      <div className="text-[10px] text-blue-600 dark:text-blue-400 font-mono">{v.ruleCode}</div>
-                    </td>
-                    <td className="py-2.5 px-3 font-medium text-slate-700 dark:text-slate-300">
-                      {v.mine} ({v.subsidiary})
-                    </td>
-                    <td className="py-2.5 px-3">
-                      <span
-                        className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                          v.severity === 'Critical'
-                            ? 'bg-rose-100 text-rose-800 dark:bg-rose-500/20 dark:text-rose-400 border border-rose-200'
-                            : 'bg-amber-100 text-amber-800 dark:bg-amber-500/20 dark:text-amber-400 border border-amber-200'
-                        }`}
-                      >
-                        {v.severity}
-                      </span>
-                    </td>
-                    <td className="py-2.5 px-3 font-mono font-medium text-slate-600 dark:text-slate-400">
-                      {v.daysOverdue > 0 ? `${v.daysOverdue}d overdue` : 'On track'}
-                    </td>
-                    <td className="py-2.5 px-3 text-slate-700 dark:text-slate-300 truncate max-w-[130px]" title={v.assignedOfficer}>
-                      {v.assignedOfficer}
-                    </td>
-                    <td className="py-2.5 px-3">
-                      <span className="text-[11px] font-semibold text-slate-800 dark:text-slate-200">
-                        {v.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-      </div>
-
-      {/* SECTION 2: INSPECTION ACTIVITY */}
-      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-xs">
-        <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
-          <div>
-            <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
-              <ClipboardList className="w-4 h-4 text-blue-600" />
-              Inspection Activity & Recent Audit Log
-            </h3>
-            <p className="text-xs text-slate-500">Track statutory, safety, and environmental inspection progress</p>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <div className="flex bg-slate-100 dark:bg-slate-800 p-0.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-semibold">
-              <button
-                onClick={() => setTrendPeriod('7d')}
-                className={`px-3 py-1 rounded-md transition-colors ${trendPeriod === '7d' ? 'bg-blue-600 text-white' : 'text-slate-600 dark:text-slate-400'}`}
-              >
-                7 Days
-              </button>
-              <button
-                onClick={() => setTrendPeriod('30d')}
-                className={`px-3 py-1 rounded-md transition-colors ${trendPeriod === '30d' ? 'bg-blue-600 text-white' : 'text-slate-600 dark:text-slate-400'}`}
-              >
-                30 Days
-              </button>
-            </div>
-            <button
-              onClick={() => onNavigateTab('inspections')}
-              className="text-xs text-blue-600 dark:text-blue-400 font-semibold hover:underline"
-            >
-              Open Module →
-            </button>
-          </div>
-        </div>
-
-        {/* Activity Table */}
-        <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-800">
+        <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-50 dark:bg-slate-950 text-slate-600 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800 font-semibold">
               <tr>
                 <th className="py-2.5 px-3">Inspection ID</th>
-                <th className="py-2.5 px-3">Mine / Subsidiary</th>
-                <th className="py-2.5 px-3">Inspection Type</th>
+                <th className="py-2.5 px-3">Mine & Subsidiary</th>
+                <th className="py-2.5 px-3">Type</th>
                 <th className="py-2.5 px-3">Date</th>
                 <th className="py-2.5 px-3">Findings</th>
                 <th className="py-2.5 px-3">Risk Level</th>
@@ -396,7 +425,7 @@ export const OverviewPanel: React.FC<OverviewPanelProps> = ({
                   <td className="py-2.5 px-3">
                     <button
                       onClick={() => onSelectInspection(insp)}
-                      className="px-2.5 py-1 rounded bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 hover:bg-blue-100 text-[11px] font-bold transition-colors"
+                      className="px-2.5 py-1 rounded bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 hover:bg-blue-100 text-[11px] font-bold transition-colors cursor-pointer"
                     >
                       View Details
                     </button>
@@ -408,140 +437,11 @@ export const OverviewPanel: React.FC<OverviewPanelProps> = ({
         </div>
       </div>
 
-      {/* SECTION 3: CORRECTIVE ACTION TRACKER PIPELINE */}
-      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-xs space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-              Corrective Action Lifecycle Tracker
-            </h3>
-            <p className="text-xs text-slate-500">Every issue requires verified evidence before final closure</p>
-          </div>
-          <button
-            onClick={() => onNavigateTab('actions')}
-            className="text-xs text-blue-600 dark:text-blue-400 font-semibold hover:underline"
-          >
-            Manage Actions →
-          </button>
-        </div>
-
-        {/* Workflow Stage Visualization */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-center">
-          {[
-            { stage: 'OPEN', count: 2, color: 'bg-rose-50 dark:bg-rose-950/40 text-rose-700 border-rose-200' },
-            { stage: 'ASSIGNED', count: 3, color: 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 border-amber-200' },
-            { stage: 'IN PROGRESS', count: 4, color: 'bg-blue-50 dark:bg-blue-950/40 text-blue-700 border-blue-200' },
-            { stage: 'PENDING VERIFICATION', count: 3, color: 'bg-purple-50 dark:bg-purple-950/40 text-purple-700 border-purple-200' },
-            { stage: 'VERIFIED', count: 5, color: 'bg-cyan-50 dark:bg-cyan-950/40 text-cyan-700 border-cyan-200' },
-            { stage: 'CLOSED', count: 12, color: 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 border-emerald-200' }
-          ].map((st, idx) => (
-            <div key={idx} className={`p-2.5 rounded-lg border text-xs ${st.color}`}>
-              <div className="text-[10px] font-bold uppercase tracking-wider opacity-80">{st.stage}</div>
-              <div className="text-lg font-bold font-mono mt-0.5">{st.count}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* Overdue Actions Table */}
-        <div className="space-y-2">
-          <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200">Pending / Overdue Actions Requiring Remediation</h4>
-          <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-800">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 dark:bg-slate-950 text-slate-600 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800 font-semibold">
-                <tr>
-                  <th className="py-2.5 px-3">Action ID</th>
-                  <th className="py-2.5 px-3">Issue Description</th>
-                  <th className="py-2.5 px-3">Mine</th>
-                  <th className="py-2.5 px-3">Responsible Owner</th>
-                  <th className="py-2.5 px-3">Due Date</th>
-                  <th className="py-2.5 px-3">Priority</th>
-                  <th className="py-2.5 px-3">Current Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                {overdueActions.map((act) => (
-                  <tr key={act.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40">
-                    <td className="py-2.5 px-3 font-mono font-bold text-blue-600 dark:text-blue-400">{act.id}</td>
-                    <td className="py-2.5 px-3 font-medium text-slate-900 dark:text-white max-w-xs truncate" title={act.issueTitle}>
-                      {act.issueTitle}
-                    </td>
-                    <td className="py-2.5 px-3 text-slate-700 dark:text-slate-300 font-semibold">{act.mine}</td>
-                    <td className="py-2.5 px-3 text-slate-700 dark:text-slate-300">{act.owner}</td>
-                    <td className="py-2.5 px-3 font-mono text-rose-600 font-semibold">{act.dueDate}</td>
-                    <td className="py-2.5 px-3">
-                      <span
-                        className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                          act.priority === 'Critical'
-                            ? 'bg-rose-100 text-rose-800 border border-rose-200'
-                            : 'bg-amber-100 text-amber-800 border border-amber-200'
-                        }`}
-                      >
-                        {act.priority}
-                      </span>
-                    </td>
-                    <td className="py-2.5 px-3">
-                      <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-mono text-[10px] font-bold">
-                        {act.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-      </div>
-
-      {/* SECTION 4: ACTIVE ALERTS & ESCALATIONS */}
-      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-xs">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
-            <ShieldAlert className="w-4 h-4 text-rose-600" />
-            Active Escalated Governance Alerts
-          </h3>
-          <span className="text-xs text-slate-500 font-mono">Strict Statutory Thresholds</span>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {ACTIVE_ALERTS.slice(0, 4).map((alt) => (
-            <div
-              key={alt.id}
-              className={`p-3 rounded-xl border flex items-start justify-between gap-3 text-xs ${
-                alt.severity === 'Critical'
-                  ? 'bg-rose-50/70 dark:bg-rose-950/30 border-rose-200 dark:border-rose-900/50'
-                  : 'bg-amber-50/70 dark:bg-amber-950/30 border-amber-200 dark:border-amber-900/50'
-              }`}
-            >
-              <div className="space-y-1">
-                <div className="flex items-center gap-2">
-                  <span
-                    className={`px-1.5 py-0.2 rounded text-[9px] font-bold uppercase ${
-                      alt.severity === 'Critical' ? 'bg-rose-600 text-white' : 'bg-amber-600 text-white'
-                    }`}
-                  >
-                    {alt.severity}
-                  </span>
-                  <span className="font-mono text-[10px] text-slate-500">{alt.timestamp}</span>
-                </div>
-                <div className="font-bold text-slate-900 dark:text-white">{alt.title}</div>
-                <div className="text-[11px] text-slate-600 dark:text-slate-400">
-                  Location: <b className="text-slate-800 dark:text-slate-200">{alt.location}</b>
-                </div>
-                <div className="text-[10px] text-slate-500 font-mono">Escalated To: {alt.escalatedTo}</div>
-              </div>
-
-              <button
-                onClick={() => onNavigateTab('notifications')}
-                className="px-2.5 py-1 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 hover:bg-slate-50 text-[10px] font-semibold shrink-0"
-              >
-                Review
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
+      {/* 2-Minute Judge Showcase Case Journey Modal */}
+      <GovernanceCaseModal
+        isOpen={isCaseModalOpen}
+        onClose={() => setIsCaseModalOpen(false)}
+      />
 
     </div>
   );
