@@ -152,15 +152,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     onSelectTab('operations');
                     setOpsExpanded(!opsExpanded);
                   }}
-                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-colors cursor-pointer ${
                     isActive
-                      ? 'bg-blue-600 text-white shadow-xs'
+                      ? 'bg-blue-600 text-white font-semibold shadow-xs'
                       : 'text-slate-300 hover:text-white hover:bg-slate-800/70'
                   }`}
                   title={collapsed ? item.label : undefined}
                 >
                   <div className="flex items-center gap-3">
-                    <Icon className="w-4 h-4 shrink-0 text-blue-400" />
+                    <Icon className="w-4.5 h-4.5 shrink-0 text-blue-400" />
                     {!collapsed && <span>{item.label}</span>}
                   </div>
                   {!collapsed && (
@@ -202,9 +202,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <button
               key={item.id}
               onClick={() => onSelectTab(item.id)}
-              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
                 isActive
-                  ? 'bg-blue-600 text-white shadow-xs'
+                  ? 'bg-blue-600 text-white font-semibold shadow-xs'
                   : 'text-slate-300 hover:text-white hover:bg-slate-800/70'
               }`}
               title={collapsed ? item.label : undefined}

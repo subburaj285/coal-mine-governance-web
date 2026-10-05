@@ -60,23 +60,23 @@ export const OverviewPanel: React.FC<OverviewPanelProps> = ({
     <div className="space-y-6">
       
       {/* Overview Header & Filter Ribbon */}
-      <div className="flex flex-wrap items-center justify-between gap-4 bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
+      <div className="flex flex-wrap items-center justify-between gap-4 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
         <div>
-          <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <Scale className="w-5 h-5 text-blue-600" />
+          <h2 className="text-xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2.5">
+            <Scale className="w-6 h-6 text-blue-600" />
             Governance Overview
           </h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
             Current compliance, inspection, risk and corrective-action status across colliery operations.
           </p>
         </div>
 
         <div className="flex items-center gap-2 text-xs">
-          <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium">
-            <Filter className="w-3.5 h-3.5 text-slate-400" />
+          <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold">
+            <Filter className="w-4 h-4 text-slate-400" />
             Subsidiary: <b className="text-blue-600 dark:text-blue-400">{subsidiary}</b>
           </span>
-          <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40 font-medium">
+          <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40 font-semibold">
             <span className="w-2 h-2 rounded-full bg-emerald-500" />
             Audited & Verified
           </span>
